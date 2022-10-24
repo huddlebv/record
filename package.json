@@ -1,6 +1,6 @@
 {
   "name": "huddle-record",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Record is a Object-Relational Mapping (ORM) TypeScript plugin that makes it easy to work with data.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -8,17 +8,21 @@
     "build": "tsc",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
-    "prepare" : "npm run build",
-    "prepublishOnly" : "npm run lint",
-    "preversion" : "npm run lint",
-    "version" : "npm run format && git add -A src",
-    "postversion" : "git push && git push --tags"
+    "prepare": "npm run build",
+    "prepublishOnly": "npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/huddlebv/record.git"
   },
-  "keywords": ["Record", "ORM", "TypeScript"],
+  "keywords": [
+    "Record",
+    "ORM",
+    "TypeScript"
+  ],
   "author": "Jelle Scheer",
   "license": "MIT",
   "bugs": {
@@ -31,5 +35,7 @@
     "tslint-config-prettier": "^1.18.0",
     "typescript": "^4.8.4"
   },
-  "files": ["lib/**/*"]
+  "files": [
+    "lib/**/*"
+  ]
 }
