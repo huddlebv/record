@@ -1,0 +1,35 @@
+{
+  "name": "record",
+  "version": "0.0.1",
+  "description": "Record is a Object-Relational Mapping (ORM) TypeScript plugin that makes it easy to work with data.",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "tslint -p tsconfig.json",
+    "prepare" : "npm run build",
+    "prepublishOnly" : "npm run lint",
+    "preversion" : "npm run lint",
+    "version" : "npm run format && git add -A src",
+    "postversion" : "git push && git push --tags"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/huddlebv/record.git"
+  },
+  "keywords": ["Record", "ORM", "TypeScript"],
+  "author": "Jelle Scheer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/huddlebv/record/issues"
+  },
+  "homepage": "https://github.com/huddlebv/record#readme",
+  "devDependencies": {
+    "prettier": "^2.7.1",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^4.8.4"
+  },
+  "files": ["lib/**/*"]
+}
