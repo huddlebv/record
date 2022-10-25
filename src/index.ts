@@ -1,8 +1,8 @@
 import { setup, axiosInstance } from "./axios";
+import { AxiosInstance } from "axios";
 
 setup({
   baseUrl: 'https://huddle.test/api/v3/',
 });
 
-console.log(axiosInstance);
-console.log('test');
+export let axiosInstanceQ: AxiosInstance = axiosInstance!;
