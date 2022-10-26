@@ -5,10 +5,10 @@ interface AxiosOptions {
   baseUrl?: string;
 }
 
-export let axiosInstance: AxiosInstance | null = null;
+export let defaultAxiosInstance: AxiosInstance | null = null;
 
 export function setup (options?: AxiosOptions) {
-  axiosInstance = axios.create({
+  defaultAxiosInstance = axios.create({
     baseURL: options?.baseUrl ?? "",
   });
 };

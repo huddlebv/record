@@ -1,9 +1,11 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Node",
     "declaration": true,
     "outDir": "./lib",
+    "composite": true,
     "strict": true,
   },
   "include": ["src"],
