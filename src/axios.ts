@@ -1,5 +1,5 @@
-import axios from "axios";
-import type { AxiosInstance } from "axios";
+import axios from 'axios';
+import type { AxiosInstance } from 'axios';
 
 interface AxiosOptions {
   baseUrl?: string;
@@ -7,8 +7,8 @@ interface AxiosOptions {
 
 export let defaultAxiosInstance: AxiosInstance | null = null;
 
-export function setup (options?: AxiosOptions) {
+export function setup(options?: AxiosOptions) {
   defaultAxiosInstance = axios.create({
-    baseURL: options?.baseUrl ?? "",
+    baseURL: options?.baseUrl ?? '',
   });
-};
+}

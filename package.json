@@ -1,6 +1,6 @@
 {
   "name": "huddle-record",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Record is a Object-Relational Mapping (ORM) TypeScript plugin that makes it easy to work with data.",
   "main": "lib/src/index.js",
   "types": "lib/src/index.d.ts",
