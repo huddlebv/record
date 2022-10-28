@@ -1,8 +1,11 @@
-import Course from "./models/course";
+import Post from "./models/post";
+import { setup } from "../../src/axios";
 
-const course = new Course({
-    id: 1,
+setup({
+  baseUrl: "https://my-json-server.typicode.com/typicode/demo/",
 });
 
-//log course
-console.log(course);
+await Post.api.getPosts();
+
+// log the amount of posts
+console.log(Post.store.count());

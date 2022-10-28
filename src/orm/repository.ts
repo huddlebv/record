@@ -40,6 +40,19 @@ export default class Repository<T> {
     return data;
   }
 
+  // delete one or multiple models from the data store
+  delete(id: number | number[]): void {
+    if (Array.isArray(id)) {
+      id.forEach((id) => {
+        this.data = this.data.filter((item) => (item as any).id !== id);
+      });
+    } else {
+      this.data = this.data.filter((item) => (item as any).id !== id);
+    }
+
+    return;
+  }
+
   transform(data: any, persist: boolean = false): T | T[] {
     if (typeof data.length === "undefined") {
       const newInstance = new this.model(data);
@@ -64,11 +77,28 @@ export default class Repository<T> {
     }
   }
 
+  // add the data to the store
   persist(data: T | T[]) {
     if (Array.isArray(data)) {
-      this.data = this.data.concat(data);
+      data.forEach((item) => {
+        this.persistSingleItem(item);
+      });
     } else {
+      this.persistSingleItem(data);
+    }
+  }
+
+  // add the data to the store if it doesn't already exist or replace the existing data with the new data
+  persistSingleItem(data: T) {
+    const id = (data as any).id;
+
+    if (!this.find(id)) {
       this.data.push(data);
+    } else {
+      // replace the existing data with the new data
+      this.data = this.data.map((item) => {
+        return (item as any).id === id ? data : item;
+      });
     }
   }
 

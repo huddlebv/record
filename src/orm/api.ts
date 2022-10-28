@@ -12,7 +12,7 @@ export default class Api<T> {
       httpGet(endpoint, requestOptions.config!)
         .then((res) => {
           if (requestOptions.save) {
-            this.repository.transform(res.data[requestOptions.source!], true);
+            this.repository.transform(requestOptions.source ? res.data[requestOptions.source] : res.data, true);
           }
 
           resolve(res);

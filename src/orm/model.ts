@@ -1,7 +1,7 @@
 import type Repository from "./repository";
 
 export default class Model {
-  id?: number = -Math.floor(Math.random());
+  id: number = -Math.floor(Math.random());
 
   constructor(public model?: any) {}
 
