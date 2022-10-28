@@ -7,5 +7,4 @@ setup({
 
 await Post.api.getPosts();
 
-// log the amount of posts
 console.log(Post.store.count());

@@ -25,9 +25,10 @@ export default class Api<T> {
 
   private returnGetOptions(options?: GetEndpointOptions): GetEndpointOptions {
     const defaultEndpointOptions: GetEndpointOptions = {
+      config: {},
+      replace: true,
       save: true,
       source: "data",
-      config: {},
     };
 
     return options

@@ -13,7 +13,7 @@ export default class Model {
 
   setupRelation<T>(model: any, data: any) {
     if (data) {
-      (model.store as Repository<T>).transform(data, true);
+      (model.store as Repository<T>).transform(data, true, true);
     }
   }
 
