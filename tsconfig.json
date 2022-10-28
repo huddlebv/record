@@ -7,7 +7,6 @@
     "outDir": "./lib",
     "composite": true,
     "strict": true,
-    "esModuleInterop": true,
   },
   "include": ["src"],
   "exclude": ["node_modules", "lib"]
