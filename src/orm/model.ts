@@ -2,8 +2,16 @@ import type Repository from "./repository";
 
 export default class Model {
   id: number = -Math.floor(Math.random());
+  private _created: boolean = false;
 
-  constructor(public model?: any) {}
+  constructor(public model: any, map: any) {
+    this.beforeCreate(map);
+
+    setTimeout(() => {
+      this._created = true;
+      this.afterCreate(this);
+    }, 0);
+  }
 
   save?(): void {
     // this could call the save() method on the api, allowing for direct calling of save() on an instance of a model
@@ -29,5 +37,29 @@ export default class Model {
     const field = (this as any)[key];
 
     return typeof field !== "undefined" && typeof field !== null;
+  }
+
+  beforeCreate(map: any) {
+    //
+  }
+
+  afterCreate(instance: any) {
+    //
+  }
+
+  beforeDelete() {
+    //
+  }
+
+  afterDelete() {
+    //
+  }
+
+  beforeUpdate(map: any) {
+    //
+  }
+
+  afterUpdate(instance: any) {
+    //
   }
 }

@@ -12,7 +12,7 @@ export default class Query<T> {
       // operator can be an actual operator or the value, depending on if a operator is provided
       // if no operator is provided, the operator is assumed to be QueryOperator.Equal
       const actualValue = typeof value === "undefined" ? operator : value;
-      const actualOperator = typeof operator === 'undefined' ? QueryOperator.EQUAL : operator;
+      const actualOperator = typeof value === 'undefined' ? QueryOperator.EQUAL : operator;
       
       // set the query result equal to the current query result plus where the field is equal to the value
       this.queryResult = this.queryResult.concat(
@@ -82,7 +82,11 @@ export default class Query<T> {
   update(data: object): T | T[] | null {
     // update the query result by the given data
     this.queryResult.forEach((item) => {
+      (item as any).beforeUpdate(data);
+
       Object.assign((item as any), data);
+
+      (item as any).afterUpdate(item);
     });
 
     return this.queryResult;

@@ -62,11 +62,20 @@ export default class Repository<T> {
 
   // deleteSingleItem by id or by key/value pair
   private deleteSingleItem(key: number | string, value?: any): void {
-    if (typeof key === "number") {
-      this.data = this.data.filter((item) => (item as any).id !== key);
-    } else {
-      this.data = this.data.filter((item) => (item as any)[key] !== value);
-    }
+    const filterNeedle = typeof key === "number" ? 'id' : key;
+    const filterValue = typeof key === "number" ? key : value;
+
+    // grab all items that match the id
+    const itemsToDelete = this.data.filter((item) => (item as any)[filterNeedle] === filterValue);
+
+    // call beforeDelete on each item
+    itemsToDelete.forEach((item) => (item as any).beforeDelete());
+
+    // filter out the items that do not match the id
+    this.data = this.data.filter((item) => (item as any)[filterNeedle] !== filterValue);
+
+    // call afterDelete on each item
+    itemsToDelete.forEach((item) => (item as any).afterDelete());
   }
 
   // delete all data from the store
@@ -76,27 +85,38 @@ export default class Repository<T> {
 
   // transforms json data into an instance of the model
   transform(data: any, persist: boolean = false, replace: boolean = true): T | T[] {
-    if (typeof data.length === "undefined") {
-      const newInstance = new this.model(data);
+    const instanceData: any[] = [];
+    const isArray = Array.isArray(data);
+    const dataToTransform = isArray ? data : [data];
 
-      if (persist) {
-        this.persist(newInstance, replace);
+    dataToTransform.forEach((item: any) => {
+      let shouldInstantiate = false;
+
+      if (!(data instanceof this.model)) {
+        const id = (data as any).id;
+        const match = this.find(id);
+
+        if (id === null) {
+          shouldInstantiate = true;
+        } else if (match === null) {
+          shouldInstantiate = true;
+        } else {
+          (match as any).beforeUpdate(data);
+        }
+      } else {
+        (item as any).beforeUpdate(data);
       }
 
-      return new this.model(data);
-    } else {
-      const instanceData: any[] = [];
+      const instance = shouldInstantiate ? new this.model(item) : item;
 
-      data.forEach((instance: any) => {
-        instanceData.push(new this.model(instance));
-      });
+      instanceData.push(instance);
+    });
 
-      if (persist) {
-        this.persist(instanceData, replace);
-      }
-
-      return instanceData;
+    if (persist) {
+      this.persist(instanceData, replace);
     }
+
+    return isArray ? instanceData : instanceData[0];
   }
 
   // add the data to the store
@@ -128,10 +148,18 @@ export default class Repository<T> {
 
       return data;
     } else if (replace) {
+      let match = null;
+
       // replace the existing data with the new data
-      this.data = this.data.map((item) => {
+      this.data = this.data.map(function (item) {
+        if ((item as any).id === id) {
+          match = item;
+        }
+
         return (item as any).id === id ? data : item;
       });
+
+      (match as any).afterUpdate(data);
 
       return this.find(id);
     }
