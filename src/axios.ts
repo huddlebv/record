@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { AxiosInstance } from 'axios';
-import AxiosOptions from "./orm/interfaces/axiosOptions";
-import DebugOptions from "./orm/interfaces/axiosDebugOptions";
+import AxiosOptions from './orm/interfaces/axiosOptions';
+import DebugOptions from './orm/interfaces/axiosDebugOptions';
 
 export let defaultAxiosInstance: AxiosInstance | null = null;
 export let debug: DebugOptions = {
@@ -19,8 +19,6 @@ export function setupRecord(options?: AxiosOptions) {
   });
 
   if (options?.debug) {
-    debug = options.debug
-      ? { ...debug, ...options.debug }
-      : debug;
+    debug = options.debug ? { ...debug, ...options.debug } : debug;
   }
 }

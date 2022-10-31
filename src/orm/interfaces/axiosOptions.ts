@@ -1,4 +1,4 @@
-import DebugOptions from "./axiosDebugOptions";
+import DebugOptions from './axiosDebugOptions';
 
 export default interface AxiosOptions {
   baseUrl: string;

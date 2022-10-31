@@ -1,5 +1,5 @@
-import Query from "./query";
-import type StoreSaveOptions from "./interfaces/StoreSaveOptions";
+import Query from './query';
+import type StoreSaveOptions from './interfaces/StoreSaveOptions';
 
 export default class Repository<T> {
   data: T[] = [];
@@ -8,9 +8,7 @@ export default class Repository<T> {
 
   // find an item in the store by id
   find(id: number): T | null {
-    const match: T | undefined = this.data.find(
-      (item) => (item as any).id === id
-    );
+    const match: T | undefined = this.data.find((item) => (item as any).id === id);
 
     return match ?? null;
   }
@@ -53,7 +51,7 @@ export default class Repository<T> {
       key.forEach((item) => {
         this.deleteSingleItem(item);
       });
-    } else if (typeof key === "number") {
+    } else if (typeof key === 'number') {
       this.deleteSingleItem(key);
     } else {
       this.deleteSingleItem(key, value);
@@ -62,8 +60,8 @@ export default class Repository<T> {
 
   // deleteSingleItem by id or by key/value pair
   private deleteSingleItem(key: number | string, value?: any): void {
-    const filterNeedle = typeof key === "number" ? 'id' : key;
-    const filterValue = typeof key === "number" ? key : value;
+    const filterNeedle = typeof key === 'number' ? 'id' : key;
+    const filterValue = typeof key === 'number' ? key : value;
 
     // grab all items that match the id
     const itemsToDelete = this.data.filter((item) => (item as any)[filterNeedle] === filterValue);
@@ -174,9 +172,7 @@ export default class Repository<T> {
       save: true,
     };
 
-    return options
-      ? { ...defaultEndpointOptions, ...options }
-      : defaultEndpointOptions;
+    return options ? { ...defaultEndpointOptions, ...options } : defaultEndpointOptions;
   }
 
   query: Query<T> = new Query<T>(this);

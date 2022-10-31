@@ -1,11 +1,8 @@
-import { defaultAxiosInstance, debug } from "./axios";
-import type { AxiosResponse } from "axios";
-import type { AxiosRequestConfig } from "axios";
+import { defaultAxiosInstance, debug } from './axios';
+import type { AxiosResponse } from 'axios';
+import type { AxiosRequestConfig } from 'axios';
 
-export async function get<T>(
-  url: string,
-  config: AxiosRequestConfig
-): Promise<AxiosResponse> {
+export async function get<T>(url: string, config: AxiosRequestConfig): Promise<AxiosResponse> {
   logRequest(url, config);
 
   const response: AxiosResponse = await defaultAxiosInstance!.get<T>(url, config);

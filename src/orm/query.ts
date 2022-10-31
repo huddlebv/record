@@ -1,5 +1,5 @@
-import type Repository from "./repository";
-import QueryOperator from "../../src/orm/enums/queryOperator";
+import type Repository from './repository';
+import QueryOperator from '../../src/orm/enums/queryOperator';
 
 export default class Query<T> {
   private queryResult: T[] = [];
@@ -8,12 +8,12 @@ export default class Query<T> {
 
   // filter the query result by function or key value pair with optional operator
   where(field: string | Function, operator?: QueryOperator | any, value?: any): Query<T> {
-    if (typeof field === "string") {
+    if (typeof field === 'string') {
       // operator can be an actual operator or the value, depending on if a operator is provided
       // if no operator is provided, the operator is assumed to be QueryOperator.Equal
-      const actualValue = typeof value === "undefined" ? operator : value;
+      const actualValue = typeof value === 'undefined' ? operator : value;
       const actualOperator = typeof value === 'undefined' ? QueryOperator.EQUAL : operator;
-      
+
       // set the query result equal to the current query result plus where the field is equal to the value
       this.queryResult = this.queryResult.concat(
         this.repository.data.filter(function (item) {
@@ -45,14 +45,14 @@ export default class Query<T> {
             default:
               return false;
           }
-        })
+        }),
       );
     } else {
       // set the query result equal to the current query result plus where function returns true
       this.queryResult = this.queryResult.concat(
         this.repository.data.filter((item) => {
           return field(item);
-        })
+        }),
       );
     }
 
@@ -74,9 +74,7 @@ export default class Query<T> {
 
   // return the last item in the query result
   last(): T | null {
-    return this.queryResult.length > 0
-      ? this.queryResult[this.queryResult.length - 1]
-      : null;
+    return this.queryResult.length > 0 ? this.queryResult[this.queryResult.length - 1] : null;
   }
 
   update(data: object): T | T[] | null {
@@ -84,7 +82,7 @@ export default class Query<T> {
     this.queryResult.forEach((item) => {
       (item as any).beforeUpdate(data);
 
-      Object.assign((item as any), data);
+      Object.assign(item as any, data);
 
       (item as any).afterUpdate(item);
     });
@@ -109,8 +107,6 @@ export default class Query<T> {
 
   // filter out duplicates by id and return the result
   filterDuplicates(items: T[]): T[] {
-    return items.filter(
-      (v, i, a) => a.findIndex((v2) => (v2 as any).id === (v as any).id) === i
-    );
+    return items.filter((v, i, a) => a.findIndex((v2) => (v2 as any).id === (v as any).id) === i);
   }
 }

@@ -1,6 +1,6 @@
-import { get as httpGet } from "../http";
-import type Repository from "./repository";
-import type { GetEndpointOptions } from "./interfaces/apiEndpointOptions";
+import { get as httpGet } from '../http';
+import type Repository from './repository';
+import type { GetEndpointOptions } from './interfaces/apiEndpointOptions';
 
 export default class Api<T> {
   constructor(protected repository: Repository<T>) {}
@@ -28,11 +28,9 @@ export default class Api<T> {
       config: {},
       replace: true,
       save: true,
-      source: "data",
+      source: 'data',
     };
 
-    return options
-      ? { ...defaultEndpointOptions, ...options }
-      : defaultEndpointOptions;
+    return options ? { ...defaultEndpointOptions, ...options } : defaultEndpointOptions;
   }
 }

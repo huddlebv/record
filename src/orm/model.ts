@@ -1,4 +1,4 @@
-import type Repository from "./repository";
+import type Repository from './repository';
 
 export default class Model {
   id: number = -Math.floor(Math.random());
@@ -36,7 +36,7 @@ export default class Model {
   has(key: string): boolean {
     const field = (this as any)[key];
 
-    return typeof field !== "undefined" && typeof field !== null;
+    return typeof field !== 'undefined' && typeof field !== null;
   }
 
   beforeCreate(map: any) {
