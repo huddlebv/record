@@ -26,13 +26,5 @@ export default class Post extends Model {
     return this._title;
   }
 
-  beforeUpdate(map: any) {
-    console.log('befu');
-  }
-
-  afterUpdate(instance: Post) {
-    console.log('aftu');
-  }
-
   declare id: number;
 }
