@@ -1,88 +1,141 @@
 import Query from './query';
 import type StoreSaveOptions from './interfaces/StoreSaveOptions';
+import QueryOptions from "./interfaces/queryOptions";
 
 export default class Repository<T> {
-  data: T[] = [];
+  // by default all data is saved to the 'all' key
+  // however, you can pass in a key to save the data to a different key
+  data: Record<string, T[]> = {
+    all: [],
+  };
 
   constructor(protected model: any) {}
 
   // find an item in the store by id
-  find(id: number): T | null {
-    const match: T | undefined = this.data.find((item) => (item as any).id === id);
+  find(id: number, options?: QueryOptions): T | null {
+    if (!this.datasetExists(options?.dataset)) {
+      return null;
+    }
+
+    const match: T | undefined = this.data[options?.dataset ?? 'all'].find((item) => (item as any).id === id);
 
     return match ?? null;
   }
 
   // return all data in the store
-  all(): T[] {
-    return this.data;
+  all(options?: QueryOptions): T[] {
+    if (!this.datasetExists(options?.dataset)) {
+      return [];
+    }
+
+    return this.data[options?.dataset ?? 'all'];
   }
 
   // return the first item in the store
-  first(): T | null {
-    return this.data.length > 0 ? this.data[0] : null;
+  first(options?: QueryOptions): T | null {
+    if (!this.datasetExists(options?.dataset)) {
+      return null;
+    }
+
+    const key = options?.dataset ?? 'all';
+
+    return this.data[key].length > 0 ? this.data[key][0] : null;
   }
 
   // return the last item in the store
-  last(): T | null {
-    return this.data.length > 0 ? this.data[this.data.length - 1] : null;
+  last(options?: QueryOptions): T | null {
+    if (!this.datasetExists(options?.dataset)) {
+      return null;
+    }
+
+    const key = options?.dataset ?? 'all';
+
+    return this.data[key].length > 0 ? this.data[key][this.data[key].length - 1] : null;
   }
 
   // return the count of the data in the store
-  count(): number {
-    return this.data.length;
+  count(options?: QueryOptions): number {
+    if (!this.datasetExists(options?.dataset)) {
+      return 0;
+    }
+
+    return this.data[options?.dataset ?? 'all'].length;
   }
 
   // return whether model data exists in the store based on an id
-  exists(id: number): boolean {
-    return this.find(id) !== null;
+  exists(id: number, options?: QueryOptions): boolean {
+    if (!this.datasetExists(options?.dataset)) {
+      return false;
+    }
+
+    return this.find(id, options) !== null;
   }
 
   // function that saves or updates the data in the store
   save(data: T | T[] | object, options?: StoreSaveOptions): T | T[] | null {
+    if (!this.datasetExists(options?.dataset)) {
+      return null;
+    }
+
     const saveOptions: StoreSaveOptions = this.returnSaveOptions(options);
 
-    return this.transform(data, saveOptions.save, saveOptions.replace);
+    return this.transform(data, options);
   }
 
   // delete one or multiple models from the data store by id or by key/value pair
-  delete(key: number | number[] | string, value?: any): void {
+  delete(key: number | number[] | string, value?: any, options?: QueryOptions): void {
+    if (!this.datasetExists(options?.dataset)) {
+      return;
+    }
+
     if (Array.isArray(key)) {
       key.forEach((item) => {
-        this.deleteSingleItem(item);
+        this.deleteSingleItem(item, value, options);
       });
     } else if (typeof key === 'number') {
-      this.deleteSingleItem(key);
+      this.deleteSingleItem(key, value, options);
     } else {
-      this.deleteSingleItem(key, value);
+      this.deleteSingleItem(key, value, options);
     }
   }
 
   // deleteSingleItem by id or by key/value pair
-  private deleteSingleItem(key: number | string, value?: any): void {
+  private deleteSingleItem(key: number | string, value?: any, options?: QueryOptions): void {
+    const dataKey = options?.dataset ?? 'all';
     const filterNeedle = typeof key === 'number' ? 'id' : key;
     const filterValue = typeof key === 'number' ? key : value;
 
     // grab all items that match the id
-    const itemsToDelete = this.data.filter((item) => (item as any)[filterNeedle] === filterValue);
+    const itemsToDelete = this.data[dataKey].filter((item) => (item as any)[filterNeedle] === filterValue);
 
     // call beforeDelete on each item
     itemsToDelete.forEach((item) => (item as any).beforeDelete());
 
     // filter out the items that do not match the id
-    this.data = this.data.filter((item) => (item as any)[filterNeedle] !== filterValue);
+    this.data.all = this.data[dataKey].filter((item) => (item as any)[filterNeedle] !== filterValue);
 
     // call afterDelete on each item
     itemsToDelete.forEach((item) => (item as any).afterDelete());
   }
 
-  // delete all data from the store
-  clear(): void {
-    this.data = [];
+  // delete all data from the store (optionally by key)
+  clear(options?: QueryOptions): void {
+    if (!this.datasetExists(options?.dataset)) {
+      return;
+    }
+
+    this.data[options?.dataset ?? 'all'] = [];
+  }
+
+  // completely reset the store
+  reset(): void {
+    this.data = {
+      all: [],
+    };
   }
 
   // transforms json data into an instance of the model
-  transform(data: any, persist: boolean = false, replace: boolean = true): T | T[] {
+  transform(data: any, options?: StoreSaveOptions): T | T[] {
     const instanceData: any[] = [];
     const isArray = Array.isArray(data);
     const dataToTransform = isArray ? data : [data];
@@ -92,14 +145,15 @@ export default class Repository<T> {
 
       if (!(data instanceof this.model)) {
         const id = (data as any).id;
-        const match = this.find(id);
 
-        if (id === null) {
-          shouldInstantiate = true;
-        } else if (match === null) {
-          shouldInstantiate = true;
-        } else {
-          (match as any).beforeUpdate(data);
+        shouldInstantiate = true;
+
+        if (id !== null) {
+          const match = this.find(id);
+
+          if (match !== null) {
+            (match as any).beforeUpdate(data);
+          }
         }
       } else {
         (item as any).beforeUpdate(data);
@@ -110,20 +164,20 @@ export default class Repository<T> {
       instanceData.push(instance);
     });
 
-    if (persist) {
-      this.persist(instanceData, replace);
+    if (options?.save) {
+      this.persist(instanceData, options);
     }
 
     return isArray ? instanceData : instanceData[0];
   }
 
   // add the data to the store
-  persist(data: T | T[], replace: boolean = true): T | T[] | null {
+  persist(data: T | T[], options?: StoreSaveOptions): T | T[] | null {
     if (Array.isArray(data)) {
       const persistedData: T[] = [];
 
       data.forEach((item) => {
-        const persistedItem = this.persistSingleItem(item, replace);
+        const persistedItem = this.persistSingleItem(item, options);
 
         if (persistedItem !== null) {
           persistedData.push(persistedItem);
@@ -132,24 +186,29 @@ export default class Repository<T> {
 
       return persistedData;
     } else {
-      return this.persistSingleItem(data, replace);
+      return this.persistSingleItem(data, options);
     }
   }
 
   // add the data to the store if it doesn't already exist or replace the existing data with the new data
-  private persistSingleItem(data: T, replace: boolean = true): T | null {
+  private persistSingleItem(data: T, options?: StoreSaveOptions): T | null {
+    const key = options?.dataset ?? 'all';
     const id = (data as any).id;
 
     // if we don't already have the data in the store, add it
     if (!this.find(id)) {
-      this.data.push(data);
+      if (!this.datasetExists(key)) {
+        this.data[key] = [];
+      }
+
+      this.data[key].push(data);
 
       return data;
-    } else if (replace) {
+    } else if (options?.replace) {
       let match = null;
 
       // replace the existing data with the new data
-      this.data = this.data.map(function (item) {
+      this.data[key] = this.data[key].map(function (item) {
         if ((item as any).id === id) {
           match = item;
         }
@@ -170,10 +229,17 @@ export default class Repository<T> {
     const defaultEndpointOptions: StoreSaveOptions = {
       replace: true,
       save: true,
+      dataset: 'all',
     };
 
     return options ? { ...defaultEndpointOptions, ...options } : defaultEndpointOptions;
   }
 
-  query: Query<T> = new Query<T>(this);
+  datasetExists(key?: string): boolean {
+    return typeof this.data[key ?? 'all'] !== 'undefined';
+  }
+
+  query(options?: QueryOptions): Query<T> {
+    return new Query<T>(this, options?.dataset ?? 'all')
+  };
 }

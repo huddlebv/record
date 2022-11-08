@@ -4,10 +4,14 @@ import QueryOperator from '../../src/orm/enums/queryOperator';
 export default class Query<T> {
   private queryResult: T[] = [];
 
-  constructor(private repository: Repository<T>) {}
+  constructor(private repository: Repository<T>, private key: string) {}
 
   // filter the query result by function or key value pair with optional operator
   where(field: string | Function, operator?: QueryOperator | any, value?: any): Query<T> {
+    if (!this.repository.datasetExists(this.key)) {
+      return this;
+    }
+
     if (typeof field === 'string') {
       // operator can be an actual operator or the value, depending on if a operator is provided
       // if no operator is provided, the operator is assumed to be QueryOperator.Equal
@@ -16,7 +20,7 @@ export default class Query<T> {
 
       // set the query result equal to the current query result plus where the field is equal to the value
       this.queryResult = this.queryResult.concat(
-        this.repository.data.filter(function (item) {
+        this.repository.data[this.key].filter(function (item) {
           switch (actualOperator) {
             case QueryOperator.EQUAL:
               return (item as any)[field] === actualValue;
@@ -50,7 +54,7 @@ export default class Query<T> {
     } else {
       // set the query result equal to the current query result plus where function returns true
       this.queryResult = this.queryResult.concat(
-        this.repository.data.filter((item) => {
+        this.repository.data[this.key].filter((item) => {
           return field(item);
         }),
       );

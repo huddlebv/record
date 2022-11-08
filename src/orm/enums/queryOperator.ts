@@ -1,4 +1,4 @@
-enum QueryOperator {
+const enum QueryOperator {
   EQUAL,
   NOT_EQUAL,
   GREATER_THAN,

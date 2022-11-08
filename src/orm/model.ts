@@ -21,7 +21,10 @@ export default class Model {
 
   setupRelation<T>(model: any, data: any) {
     if (data) {
-      (model.store as Repository<T>).transform(data, true, true);
+      (model.store as Repository<T>).transform(data, {
+        save: true,
+        replace: true,
+      });
     }
   }
 
@@ -30,7 +33,7 @@ export default class Model {
   }
 
   hasMany<T>(model: any, key: string): T[] {
-    return (model.store as Repository<T>).query.where(key, this.id).get();
+    return (model.store as Repository<T>).query().where(key, this.id).get();
   }
 
   has(key: string): boolean {
@@ -39,6 +42,10 @@ export default class Model {
     return typeof field !== 'undefined' && typeof field !== null;
   }
 
+  /*
+  * TODO: before & after events should be cancellable, so logic for creating/updating should be handled here
+  * instead of directly in the repository
+  */
   beforeCreate(map: any) {
     //
   }

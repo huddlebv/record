@@ -49,7 +49,6 @@
     "lib/**/*"
   ],
   "dependencies": {
-    "axios": "^0.27.2",
-    "common-js": "^0.3.8"
+    "axios": "^0.27.2"
   }
 }

@@ -14,7 +14,9 @@ export default class Post extends Model {
 
   static store: PostRepository<Post> = new PostRepository<Post>(this);
 
-  static api: PostService<Post> = new PostService<Post>(this.store);
+  static api: PostService<Post> = new PostService<Post>(this, this.store, {
+    route: 'posts',
+  });
 
   // set title to uppercase
   set title(value: string | null) {

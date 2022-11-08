@@ -1,63 +1,92 @@
-import { defaultAxiosInstance, debug } from './axios';
+import { record } from './main';
 import type { AxiosResponse } from 'axios';
 import type { AxiosRequestConfig } from 'axios';
+import type HttpRequest from './orm/interfaces/httpRequest';
 
-interface ApiRequest {
-  callback: () => Promise<AxiosResponse>;
-  config?: AxiosRequestConfig;
-  url: string;
-}
-
-export async function get<T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse> {
-  return await makeRequest({
-    url,
-    config,
-    callback: () => defaultAxiosInstance!.get(url, config),
-  });
-}
-
-export async function post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<AxiosResponse> {
-  return await makeRequest({
-    url,
-    config,
-    callback: () => defaultAxiosInstance!.post<T>(url, data, config),
-  });
-}
-
-async function makeRequest(apiRequest: ApiRequest): Promise<AxiosResponse> {
-  logRequest(apiRequest.url, apiRequest.config);
-
-  const response = await apiRequest.callback();
-
-  logResponse(response);
-
-  return response;
-}
-
-function logRequest(url: string, config?: AxiosRequestConfig) {
-  if (debug.logRequest) {
-    console.log(`GET ${defaultAxiosInstance!.defaults.baseURL}${url}`);
+export default class Http {
+  static async get<T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse> {
+    return await this.makeRequest({
+      url,
+      config,
+      callback: () => record.api.axiosInstance!.get(url, config),
+    });
   }
 
-  if (debug.logRequestHeaders) {
-    console.log(`Request headers: ${defaultAxiosInstance!.defaults.headers}`);
+  static async post<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<AxiosResponse> {
+    return await this.makeRequest({
+      url,
+      config,
+      callback: () => record.api.axiosInstance!.post<T>(url, data, config),
+    });
   }
 
-  if (debug.logRequestBody && config) {
-    console.log(`Request body: ${config.data}`);
-  }
-}
-
-function logResponse(response: AxiosResponse) {
-  if (debug.logResponseStatus) {
-    console.log(`Status: ${response.status} ${response.statusText}`);
+  static async put<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<AxiosResponse> {
+    return await this.makeRequest({
+      url,
+      config,
+      callback: () => record.api.axiosInstance!.put<T>(url, data, config),
+    });
   }
 
-  if (debug.logResponseHeaders) {
-    console.log(`Response headers: ${response.headers}`);
+  static async patch<T>(url: string, data?: any, config?: AxiosRequestConfig): Promise<AxiosResponse> {
+    return await this.makeRequest({
+      url,
+      config,
+      callback: () => record.api.axiosInstance!.patch<T>(url, data, config),
+    });
   }
 
-  if (debug.logResponseBody) {
-    console.log(`Response body: ${response.data}`);
+  static async head<T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse> {
+    return await this.makeRequest({
+      url,
+      config,
+      callback: () => record.api.axiosInstance!.head<T>(url, config),
+    });
+  }
+
+  static async delete<T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse> {
+    return await this.makeRequest({
+      url,
+      config,
+      callback: () => record.api.axiosInstance!.delete<T>(url, config),
+    });
+  }
+
+  private static async makeRequest(apiRequest: HttpRequest): Promise<AxiosResponse> {
+    this.logRequest(apiRequest.url, apiRequest.config);
+
+    const response = await apiRequest.callback();
+
+    this.logResponse(response);
+
+    return response;
+  }
+
+  private static logRequest(url: string, config?: AxiosRequestConfig) {
+    if (record.api.debug?.logRequest) {
+      console.log(`GET ${record.api.axiosInstance!.defaults.baseURL}${url}`);
+    }
+
+    if (record.api.debug?.logRequestHeaders) {
+      console.log(`Request headers: ${record.api.axiosInstance!.defaults.headers}`);
+    }
+
+    if (record.api.debug?.logRequestBody && config) {
+      console.log(`Request body: ${config.data}`);
+    }
+  }
+
+  private static logResponse(response: AxiosResponse) {
+    if (record.api.debug?.logResponseStatus) {
+      console.log(`Status: ${response.status} ${response.statusText}`);
+    }
+
+    if (record.api.debug?.logResponseHeaders) {
+      console.log(`Response headers: ${response.headers}`);
+    }
+
+    if (record.api.debug?.logResponseBody) {
+      console.log(`Response body: ${response.data}`);
+    }
   }
 }

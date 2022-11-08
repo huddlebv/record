@@ -1,4 +1,5 @@
-export default interface StoreSaveOptions {
-  replace?: boolean;
-  save?: boolean;
-}
+import {ApiRequestConfig} from "./apiRequestConfig";
+
+type StoreSaveOptions = Pick<ApiRequestConfig, "replace" | "save" | "dataset">;
+
+export default StoreSaveOptions;
