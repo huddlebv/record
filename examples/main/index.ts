@@ -1,6 +1,5 @@
 import Post from "./models/post";
 import { setupRecord } from "../../src/main";
-import QueryOperator from "../../src/orm/enums/queryOperator";
 
 setupRecord({
   api: {
