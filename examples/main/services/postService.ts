@@ -1,6 +1,7 @@
 import Api from "../../../src/orm/api";
+import Post from "../models/post";
 
-export default class PostService<T> extends Api<T> {
+export default class PostService<T extends Post> extends Api<T> {
   getPosts() {
     return new Promise((resolve, reject) => {
       this.get("posts", {
