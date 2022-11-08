@@ -43,9 +43,9 @@ export default class Model {
   }
 
   /*
-  * TODO: before & after events should be cancellable, so logic for creating/updating should be handled here
-  * instead of directly in the repository
-  */
+   * TODO: before & after events should be cancellable, so logic for creating/updating should be handled here
+   * instead of directly in the repository
+   */
   beforeCreate(map: any) {
     //
   }

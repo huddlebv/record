@@ -5,7 +5,7 @@ export interface ApiRequestConfig {
   replace?: boolean;
   save?: boolean;
   source?: string | null;
-  delete?: number|number[]|string;
+  delete?: number | number[] | string;
   deleteValue?: any;
   dataset?: string;
 }

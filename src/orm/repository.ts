@@ -1,6 +1,6 @@
 import Query from './query';
 import type StoreSaveOptions from './interfaces/StoreSaveOptions';
-import QueryOptions from "./interfaces/queryOptions";
+import QueryOptions from './interfaces/queryOptions';
 
 export default class Repository<T> {
   // by default all data is saved to the 'all' key
@@ -240,6 +240,6 @@ export default class Repository<T> {
   }
 
   query(options?: QueryOptions): Query<T> {
-    return new Query<T>(this, options?.dataset ?? 'all')
-  };
+    return new Query<T>(this, options?.dataset ?? 'all');
+  }
 }

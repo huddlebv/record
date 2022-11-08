@@ -1,17 +1,17 @@
 import Http from '../http';
 import type Repository from './repository';
 import type { ApiRequestConfig } from './interfaces/apiRequestConfig';
-import { AxiosResponse } from "axios";
-import type ApiRequest from "./interfaces/apiRequest";
-import HttpRequest from "./enums/httpRequest";
-import { record } from "../main";
-import ApiModelConfig from "./interfaces/apiModelConfig";
+import { AxiosResponse } from 'axios';
+import type ApiRequest from './interfaces/apiRequest';
+import HttpRequest from './enums/httpRequest';
+import { record } from '../main';
+import ApiModelConfig from './interfaces/apiModelConfig';
 
 export default class Api<T> {
   constructor(protected model: any, protected repository: Repository<T>, protected config: ApiModelConfig) {}
 
   async get(endpoint?: string, options?: ApiRequestConfig) {
-    await this.makeRequest(HttpRequest.GET,{
+    await this.makeRequest(HttpRequest.GET, {
       url: endpoint,
       options,
       callback: (url: string) => Http.get(url, options?.config),
@@ -19,7 +19,7 @@ export default class Api<T> {
   }
 
   async post(endpoint: string, data?: any, options?: ApiRequestConfig) {
-    await this.makeRequest(HttpRequest.POST,{
+    await this.makeRequest(HttpRequest.POST, {
       url: endpoint,
       options,
       callback: (url: string) => Http.post(url, data, options?.config),
@@ -28,11 +28,11 @@ export default class Api<T> {
 
   async put(endpoint: string, data?: any, options?: ApiRequestConfig) {
     /*
-    * TODO: Currently, Http.put will replace the entire record with the data provided, instead of updating the record.
-    * We can fix this but we'll have to write a function that can update a model and all of its relationships.
-    */
+     * TODO: Currently, Http.put will replace the entire record with the data provided, instead of updating the record.
+     * We can fix this but we'll have to write a function that can update a model and all of its relationships.
+     */
 
-    await this.makeRequest(HttpRequest.PUT,{
+    await this.makeRequest(HttpRequest.PUT, {
       url: endpoint,
       options,
       callback: (url: string) => Http.put(url, data, options?.config),
@@ -40,7 +40,7 @@ export default class Api<T> {
   }
 
   async patch(endpoint: string, data?: any, options?: ApiRequestConfig) {
-    await this.makeRequest(HttpRequest.PATCH,{
+    await this.makeRequest(HttpRequest.PATCH, {
       url: endpoint,
       options,
       callback: (url: string) => Http.patch(url, data, options?.config),
@@ -67,17 +67,22 @@ export default class Api<T> {
     const requestOptions: ApiRequestConfig = this.returnApiOptions(apiRequest.options);
 
     return new Promise(async (resolve, reject) => {
-      await apiRequest.callback(this.config.route ?? '' + apiRequest.url).then((res) => {
-        if (![HttpRequest.HEAD, HttpRequest.DELETE].includes(method) && requestOptions.save) {
-          this.repository.transform(requestOptions.source ? res.data[requestOptions.source] : res.data, requestOptions);
-        } else if (method === HttpRequest.DELETE && typeof requestOptions.delete !== 'undefined') {
-          this.repository.delete(requestOptions.delete, requestOptions.deleteValue, {
-            dataset: requestOptions?.dataset ?? 'all'
-          });
-        }
+      await apiRequest
+        .callback(this.config.route ?? '' + apiRequest.url)
+        .then((res) => {
+          if (![HttpRequest.HEAD, HttpRequest.DELETE].includes(method) && requestOptions.save) {
+            this.repository.transform(
+              requestOptions.source ? res.data[requestOptions.source] : res.data,
+              requestOptions,
+            );
+          } else if (method === HttpRequest.DELETE && typeof requestOptions.delete !== 'undefined') {
+            this.repository.delete(requestOptions.delete, requestOptions.deleteValue, {
+              dataset: requestOptions?.dataset ?? 'all',
+            });
+          }
 
-        resolve(res);
-      })
+          resolve(res);
+        })
         .catch((err) => {
           reject(err);
         });
