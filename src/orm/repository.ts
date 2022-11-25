@@ -79,7 +79,7 @@ export default class Repository<T> {
 
     const saveOptions: StoreSaveOptions = this.returnSaveOptions(options);
 
-    return this.transform(data, options);
+    return this.transform(data, saveOptions);
   }
 
   // delete one or multiple models from the data store by id or by key/value pair

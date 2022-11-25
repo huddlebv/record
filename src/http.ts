@@ -55,11 +55,15 @@ export default class Http {
   private static async makeRequest(apiRequest: HttpRequest): Promise<AxiosResponse> {
     this.logRequest(apiRequest.url, apiRequest.config);
 
-    const response = await apiRequest.callback();
+    try {
+      const response = await apiRequest.callback();
 
-    this.logResponse(response);
+      this.logResponse(response as AxiosResponse);
 
-    return response;
+      return response;
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   private static logRequest(url: string, config?: AxiosRequestConfig) {
