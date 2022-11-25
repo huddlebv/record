@@ -1,4 +1,4 @@
-import { ApiRequestConfig } from './apiRequestConfig';
+import { ApiRequestConfig } from './apiRequestConfig.js';
 
 type StoreSaveOptions = Pick<ApiRequestConfig, 'replace' | 'save' | 'dataset'>;
 

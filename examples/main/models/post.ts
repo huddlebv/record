@@ -1,6 +1,6 @@
-import Model from "../../../src/orm/model";
-import PostRepository from "../repositories/postRepository";
-import PostService from "../services/postService";
+import Model from "../../../src/orm/model.js";
+import PostRepository from "../repositories/postRepository.js";
+import PostService from "../services/postService.js";
 
 export default class Post extends Model {
   _title: string = "";

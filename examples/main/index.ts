@@ -1,5 +1,5 @@
-import Post from "./models/post";
-import { setupRecord } from "../../src/main";
+import Post from "./models/post.js";
+import { setupRecord } from "../../src/main.js";
 
 setupRecord({
   api: {

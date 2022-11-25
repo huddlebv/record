@@ -1,7 +1,7 @@
-import { record } from './main';
+import { record } from './main.js';
 import type { AxiosResponse } from 'axios';
 import type { AxiosRequestConfig } from 'axios';
-import type HttpRequest from './orm/interfaces/httpRequest';
+import type HttpRequest from './orm/interfaces/httpRequest.js';
 
 export default class Http {
   static async get<T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse> {

@@ -1,4 +1,4 @@
-import type Repository from './repository';
+import type Repository from './repository.js';
 
 export default class Model {
   id: number = -Math.floor(Math.random());

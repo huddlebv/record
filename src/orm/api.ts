@@ -1,11 +1,11 @@
-import Http from '../http';
-import type Repository from './repository';
-import type { ApiRequestConfig } from './interfaces/apiRequestConfig';
+import Http from '../http.js';
+import type Repository from './repository.js';
+import type { ApiRequestConfig } from './interfaces/apiRequestConfig.js';
 import { AxiosResponse } from 'axios';
-import type ApiRequest from './interfaces/apiRequest';
-import HttpRequest from './enums/httpRequest';
-import { record } from '../main';
-import ApiModelConfig from './interfaces/apiModelConfig';
+import type ApiRequest from './interfaces/apiRequest.js';
+import HttpRequest from './enums/httpRequest.js';
+import { record } from '../main.js';
+import ApiModelConfig from './interfaces/apiModelConfig.js';
 
 export default class Api<T> {
   constructor(protected model: any, protected repository: Repository<T>, protected config: ApiModelConfig) {}
