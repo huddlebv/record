@@ -140,34 +140,55 @@ export default class Repository<T> {
     const isArray = Array.isArray(data);
     const dataToTransform = isArray ? data : [data];
 
+    // loop over data
     dataToTransform.forEach((item: any) => {
       let shouldInstantiate = false;
 
-      if (!(data instanceof this.model)) {
-        const id = (data as any).id;
+      // see if the item already is a model
+      if (!(item instanceof this.model)) {
+        // if not, check if the item has an id
+        const id = (item as any).id;
 
+        // don't save if we don't have an id
+        if (typeof id === 'undefined') {
+          return;
+        }
+
+        // it's not a model, but it has an id, so we should instantiate it
         shouldInstantiate = true;
 
+        // check if the item already exists in the store
         if (id !== null) {
           const match = this.find(id);
 
           if (match !== null) {
+            // if it does, fire the beforeUpdate event
             (match as any).beforeUpdate(data);
           }
         }
       } else {
+        // if it is a existing model, fire the beforeUpdate event
         (item as any).beforeUpdate(data);
       }
 
+      // instantiate the model if needed
       const instance = shouldInstantiate ? new this.model(item) : item;
 
+      // add the instance to the array
       instanceData.push(instance);
     });
 
+    // don't save if we don't have any data
+    if (instanceData.length === 0) {
+      return [];
+    }
+
+    // persist the data if needed
     if (options?.save) {
       this.persist(instanceData, options);
     }
 
+    // return the data
     return isArray ? instanceData : instanceData[0];
   }
 

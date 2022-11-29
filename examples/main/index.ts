@@ -13,4 +13,9 @@ setupRecord({
 });
 
 // await for posts to be fetched
-await Post.api.get();
+await Post.api.get().then((data) => {
+    console.log(data);
+}).catch((e) => {
+  console.log(e);
+    console.log('error');
+});
