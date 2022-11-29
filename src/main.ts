@@ -1,5 +1,5 @@
 import axios from 'axios';
-import RecordConfig from './orm/interfaces/recordConfig';
+import RecordConfig from './orm/interfaces/recordConfig.js';
 
 export let record: RecordConfig = {
   api: {

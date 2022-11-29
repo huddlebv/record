@@ -1,5 +1,5 @@
-import type Repository from './repository';
-import QueryOperator from '../../src/orm/enums/queryOperator';
+import type Repository from './repository.js';
+import QueryOperator from '../../src/orm/enums/queryOperator.js';
 
 export default class Query<T> {
   private queryResult: T[] = [];

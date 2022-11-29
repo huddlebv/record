@@ -1,11 +1,11 @@
-import Http from '../http';
-import type Repository from './repository';
-import type { ApiRequestConfig } from './interfaces/apiRequestConfig';
-import type InternalApiRequest from './interfaces/internalApiRequest';
-import HttpRequest from './enums/httpRequest';
-import { record } from '../main';
-import ApiModelConfig from './interfaces/apiModelConfig';
-import ApiResponse from "./interfaces/apiResponse";
+import Http from '../http.js';
+import type Repository from './repository.js';
+import type { ApiRequestConfig } from './interfaces/apiRequestConfig.js';
+import type InternalApiRequest from './interfaces/internalApiRequest.js';
+import HttpRequest from './enums/httpRequest.js';
+import { record } from '../main.js';
+import ApiModelConfig from './interfaces/apiModelConfig.js';
+import ApiResponse from "./interfaces/apiResponse.js";
 
 export default class Api<T> {
   constructor(protected model: any, protected repository: Repository<T>, protected config: ApiModelConfig) {}

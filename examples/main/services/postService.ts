@@ -1,5 +1,5 @@
-import Api from "../../../src/orm/api";
-import Post from "../models/post";
+import Api from "../../../src/orm/api.js";
+import Post from "../models/post.js";
 
 export default class PostService<T extends Post> extends Api<T> {
   getPosts() {

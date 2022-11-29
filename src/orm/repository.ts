@@ -1,6 +1,6 @@
-import Query from './query';
-import type StoreSaveOptions from './interfaces/StoreSaveOptions';
-import QueryOptions from './interfaces/queryOptions';
+import Query from './query.js';
+import type StoreSaveOptions from './interfaces/StoreSaveOptions.js';
+import QueryOptions from './interfaces/queryOptions.js';
 
 export default class Repository<T> {
   // by default all data is saved to the 'all' key
