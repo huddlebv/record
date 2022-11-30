@@ -5,7 +5,7 @@ import type InternalApiRequest from './interfaces/internalApiRequest.js';
 import HttpRequest from './enums/httpRequest.js';
 import { record } from '../main.js';
 import ApiModelConfig from './interfaces/apiModelConfig.js';
-import ApiResponse from "./interfaces/apiResponse.js";
+import ApiResponse from './interfaces/apiResponse.js';
 
 export default class Api<T> {
   constructor(protected model: any, protected repository: Repository<T>, protected config: ApiModelConfig) {}
@@ -76,7 +76,7 @@ export default class Api<T> {
             const dataToTransform = requestOptions.source ? res.data[requestOptions.source] : res.data;
 
             if (dataToTransform) {
-              const savedInstances: T|T[] = this.repository.transform(
+              const savedInstances: T | T[] = this.repository.transform(
                 requestOptions.source ? res.data[requestOptions.source] : res.data,
                 requestOptions,
               );

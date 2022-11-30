@@ -56,13 +56,16 @@ export default class Http {
     this.logRequest(apiRequest.url, apiRequest.config);
 
     return new Promise(async (resolve, reject) => {
-      await apiRequest.callback().then((response) => {
-        this.logResponse(response as AxiosResponse);
+      await apiRequest
+        .callback()
+        .then((response) => {
+          this.logResponse(response as AxiosResponse);
 
-        resolve(response);
-      }).catch((error) => {
-        reject(error);
-      });
+          resolve(response);
+        })
+        .catch((error) => {
+          reject(error);
+        });
     });
   }
 

@@ -1,6 +1,6 @@
-import { AxiosResponse } from "axios";
+import { AxiosResponse } from 'axios';
 
 export default interface ApiResponse<T> {
-    response: AxiosResponse;
-    instances: T[];
+  response: AxiosResponse;
+  instances: T[];
 }
