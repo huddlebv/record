@@ -97,7 +97,7 @@ export default class Api<T> {
 
           resolve({
             response: res,
-            instances: instances,
+            instances,
           });
         })
         .catch((err) => {
