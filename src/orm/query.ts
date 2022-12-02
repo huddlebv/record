@@ -21,8 +21,7 @@ export default class Query<T> {
       const actualOperator = typeof value === 'undefined' ? QueryOperator.EQUAL : operator;
 
       // set the query result equal to the current query result plus where the field is equal to the value
-      this.queryResult = this.queryResult.concat(
-        this.repository.data[this.key].filter(function (item) {
+      this.queryResult = this.queryResult.filter(function (item) {
           switch (actualOperator) {
             case QueryOperator.EQUAL:
               return (item as any)[field] === actualValue;
@@ -51,15 +50,12 @@ export default class Query<T> {
             default:
               return false;
           }
-        }),
-      );
+        });
     } else {
       // set the query result equal to the current query result plus where function returns true
-      this.queryResult = this.queryResult.concat(
-        this.repository.data[this.key].filter((item) => {
+      this.queryResult = this.queryResult.filter((item) => {
           return field(item);
-        }),
-      );
+        });
     }
 
     // filter out duplicates

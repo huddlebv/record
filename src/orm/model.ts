@@ -33,6 +33,7 @@ export default class Model {
   }
 
   hasMany<T>(model: any, key: string): T[] {
+    console.log(key, this.id);
     return (model.store as Repository<T>).query().where(key, this.id).get();
   }
 
