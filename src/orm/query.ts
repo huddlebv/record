@@ -4,7 +4,9 @@ import QueryOperator from '../../src/orm/enums/queryOperator.js';
 export default class Query<T> {
   private queryResult: T[] = [];
 
-  constructor(private repository: Repository<T>, private key: string) {}
+  constructor(private repository: Repository<T>, private key: string) {
+    this.queryResult = this.repository.data[key];
+  }
 
   // filter the query result by function or key value pair with optional operator
   where(field: string | Function, operator?: QueryOperator | any, value?: any): Query<T> {
@@ -112,5 +114,18 @@ export default class Query<T> {
   // filter out duplicates by id and return the result
   filterDuplicates(items: T[]): T[] {
     return items.filter((v, i, a) => a.findIndex((v2) => (v2 as any).id === (v as any).id) === i);
+  }
+
+  // order by the given field and direction
+  orderBy(field: string, direction: 'asc' | 'desc' = 'asc'): Query<T> {
+    this.queryResult = this.queryResult.sort((a, b) => {
+      if (direction === 'asc') {
+        return (a as any)[field] > (b as any)[field] ? 1 : -1;
+      } else {
+        return (a as any)[field] < (b as any)[field] ? 1 : -1;
+      }
+    });
+
+    return this;
   }
 }
