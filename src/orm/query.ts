@@ -22,40 +22,40 @@ export default class Query<T> {
 
       // set the query result equal to the current query result plus where the field is equal to the value
       this.queryResult = this.queryResult.filter(function (item) {
-          switch (actualOperator) {
-            case QueryOperator.EQUAL:
-              return (item as any)[field] === actualValue;
-            case QueryOperator.NOT_EQUAL:
-              return (item as any)[field] !== actualValue;
-            case QueryOperator.GREATER_THAN:
-              return (item as any)[field] > actualValue;
-            case QueryOperator.GREATER_THAN_OR_EQUAL:
-              return (item as any)[field] >= actualValue;
-            case QueryOperator.LESS_THAN:
-              return (item as any)[field] < actualValue;
-            case QueryOperator.LESS_THAN_OR_EQUAL:
-              return (item as any)[field] <= actualValue;
-            case QueryOperator.IN:
-              return (actualValue as any[]).includes((item as any)[field]);
-            case QueryOperator.NOT_IN:
-              return !(actualValue as any[]).includes((item as any)[field]);
-            case QueryOperator.CONTAINS:
-              return (item as any)[field].includes(actualValue);
-            case QueryOperator.DOES_NOT_CONTAIN:
-              return !(item as any)[field].includes(actualValue);
-            case QueryOperator.IS_NULL:
-              return (item as any)[field] === null;
-            case QueryOperator.IS_NOT_NULL:
-              return (item as any)[field] !== null;
-            default:
-              return false;
-          }
-        });
+        switch (actualOperator) {
+          case QueryOperator.EQUAL:
+            return (item as any)[field] === actualValue;
+          case QueryOperator.NOT_EQUAL:
+            return (item as any)[field] !== actualValue;
+          case QueryOperator.GREATER_THAN:
+            return (item as any)[field] > actualValue;
+          case QueryOperator.GREATER_THAN_OR_EQUAL:
+            return (item as any)[field] >= actualValue;
+          case QueryOperator.LESS_THAN:
+            return (item as any)[field] < actualValue;
+          case QueryOperator.LESS_THAN_OR_EQUAL:
+            return (item as any)[field] <= actualValue;
+          case QueryOperator.IN:
+            return (actualValue as any[]).includes((item as any)[field]);
+          case QueryOperator.NOT_IN:
+            return !(actualValue as any[]).includes((item as any)[field]);
+          case QueryOperator.CONTAINS:
+            return (item as any)[field].includes(actualValue);
+          case QueryOperator.DOES_NOT_CONTAIN:
+            return !(item as any)[field].includes(actualValue);
+          case QueryOperator.IS_NULL:
+            return (item as any)[field] === null;
+          case QueryOperator.IS_NOT_NULL:
+            return (item as any)[field] !== null;
+          default:
+            return false;
+        }
+      });
     } else {
       // set the query result equal to the current query result plus where function returns true
       this.queryResult = this.queryResult.filter((item) => {
-          return field(item);
-        });
+        return field(item);
+      });
     }
 
     // filter out duplicates
