@@ -5,7 +5,11 @@ export default class Query<T> {
   private queryResult: T[] = [];
 
   constructor(private repository: Repository<T>, private key: string) {
-    this.queryResult = this.repository.data[key];
+    this.setup();
+  }
+
+  private setup() {
+    this.queryResult = this.repository.data[this.key];
   }
 
   // filter the query result by function or key value pair with optional operator
@@ -54,12 +58,32 @@ export default class Query<T> {
     } else {
       // set the query result equal to the current query result plus where function returns true
       this.queryResult = this.queryResult.filter((item) => {
-        return field(item);
+        return field(item, this);
       });
     }
 
     // filter out duplicates
     this.queryResult = this.filterDuplicates(this.queryResult);
+
+    return this;
+  }
+
+  // or where the query result
+  orWhere(field: string | Function, operator?: QueryOperator | any, value?: any): Query<T> {
+    // get the current query result
+    const currentQueryResult = this.queryResult;
+
+    // temporarily reset query results to the repository data so that we can filter through all items
+    this.setup();
+
+    // get the new query result
+    const newQueryResult = this.where(field, operator, value).get();
+
+    // set the query result equal to the current query result plus the new query result
+    const concattedQueryResult = currentQueryResult.concat(newQueryResult);
+
+    // filter out duplicates
+    this.queryResult = this.filterDuplicates(concattedQueryResult);
 
     return this;
   }
