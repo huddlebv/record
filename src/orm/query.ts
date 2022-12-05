@@ -2,7 +2,7 @@ import type Repository from './repository.js';
 import QueryOperator from '../../src/orm/enums/queryOperator.js';
 
 export default class Query<T> {
-  private queryResult: T[] = [];
+  queryResult: T[] = [];
 
   constructor(private repository: Repository<T>, private key: string) {
     this.setup();
@@ -56,10 +56,27 @@ export default class Query<T> {
         }
       });
     } else {
+      // return value of the filter might be false, in case the query is being extended
+      let hasReturnValues = true;
+
       // set the query result equal to the current query result plus where function returns true
-      this.queryResult = this.queryResult.filter((item) => {
+      const filteredResult = this.queryResult.filter((item) => {
+        // call the function with the item and the query as parameters
+        const filteredItemResult = field(item, this);
+
+        // if we don't have a return value, the query is being extended
+        if (typeof filteredItemResult === 'undefined') {
+          hasReturnValues = false;
+        }
+
         return field(item, this);
       });
+
+      // if we have return values, we can set the query result to the filtered result
+      // otherwise, we can't set the query result to the filtered result, because the query is being extended
+      if (hasReturnValues) {
+        this.queryResult = filteredResult;
+      }
     }
 
     // filter out duplicates
