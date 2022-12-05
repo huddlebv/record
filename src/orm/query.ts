@@ -2,7 +2,7 @@ import type Repository from './repository.js';
 import QueryOperator from '../../src/orm/enums/queryOperator.js';
 
 export default class Query<T> {
-  queryResult: T[] = [];
+  private queryResult: T[] = [];
 
   constructor(private repository: Repository<T>, private key: string) {
     this.setup();
@@ -111,13 +111,21 @@ export default class Query<T> {
   }
 
   // return the first item in the query result
-  first(): T | null {
-    return this.queryResult.length > 0 ? this.queryResult[0] : null;
+  first(amount: number = 1): T | T[] | null {
+    if (this.queryResult.length === 0) {
+      return amount > 1 ? [] : null;
+    }
+
+    return amount === 1 ? this.queryResult[0] : this.queryResult.slice(0, amount);
   }
 
   // return the last item in the query result
-  last(): T | null {
-    return this.queryResult.length > 0 ? this.queryResult[this.queryResult.length - 1] : null;
+  last(amount: number = 1): T | T[] | null {
+    if (this.queryResult.length === 0) {
+      return amount > 1 ? [] : null;
+    }
+
+    return amount === 1 ? this.queryResult[this.queryResult.length - 1] : this.queryResult.slice(this.queryResult.length - amount, this.queryResult.length);
   }
 
   update(data: object): T | T[] | null {
