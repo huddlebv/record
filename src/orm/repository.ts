@@ -58,7 +58,9 @@ export default class Repository<T> {
       return amount > 0 ? [] : null;
     }
 
-    return amount === 1 ? this.data[key][this.data[key].length - 1] : this.data[key].slice(this.data[key].length - amount, this.data[key].length);
+    return amount === 1
+      ? this.data[key][this.data[key].length - 1]
+      : this.data[key].slice(this.data[key].length - amount, this.data[key].length);
   }
 
   // return the count of the data in the store

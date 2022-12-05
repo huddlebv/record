@@ -125,7 +125,9 @@ export default class Query<T> {
       return amount > 1 ? [] : null;
     }
 
-    return amount === 1 ? this.queryResult[this.queryResult.length - 1] : this.queryResult.slice(this.queryResult.length - amount, this.queryResult.length);
+    return amount === 1
+      ? this.queryResult[this.queryResult.length - 1]
+      : this.queryResult.slice(this.queryResult.length - amount, this.queryResult.length);
   }
 
   update(data: object): T | T[] | null {
