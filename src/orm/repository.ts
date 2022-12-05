@@ -32,25 +32,33 @@ export default class Repository<T> {
   }
 
   // return the first item in the store
-  first(options?: QueryOptions): T | null {
+  first(amount: number = 1, options?: QueryOptions): T | T[] | null {
     if (!this.datasetExists(options?.dataset)) {
       return null;
     }
 
     const key = options?.dataset ?? 'all';
 
-    return this.data[key].length > 0 ? this.data[key][0] : null;
+    if (this.data[key].length === 0) {
+      return amount > 0 ? [] : null;
+    }
+
+    return amount === 1 ? this.data[key][0] : this.data[key].slice(0, amount);
   }
 
   // return the last item in the store
-  last(options?: QueryOptions): T | null {
+  last(amount: number = 1, options?: QueryOptions): T | T[] | null {
     if (!this.datasetExists(options?.dataset)) {
       return null;
     }
 
     const key = options?.dataset ?? 'all';
 
-    return this.data[key].length > 0 ? this.data[key][this.data[key].length - 1] : null;
+    if (this.data[key].length === 0) {
+      return amount > 0 ? [] : null;
+    }
+
+    return amount === 1 ? this.data[key][this.data[key].length - 1] : this.data[key].slice(this.data[key].length - amount, this.data[key].length);
   }
 
   // return the count of the data in the store

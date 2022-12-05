@@ -5,7 +5,11 @@ export default class Query<T> {
   private queryResult: T[] = [];
 
   constructor(private repository: Repository<T>, private key: string) {
-    this.queryResult = this.repository.data[key];
+    this.setup();
+  }
+
+  private setup() {
+    this.queryResult = this.repository.data[this.key];
   }
 
   // filter the query result by function or key value pair with optional operator
@@ -22,44 +26,81 @@ export default class Query<T> {
 
       // set the query result equal to the current query result plus where the field is equal to the value
       this.queryResult = this.queryResult.filter(function (item) {
-          switch (actualOperator) {
-            case QueryOperator.EQUAL:
-              return (item as any)[field] === actualValue;
-            case QueryOperator.NOT_EQUAL:
-              return (item as any)[field] !== actualValue;
-            case QueryOperator.GREATER_THAN:
-              return (item as any)[field] > actualValue;
-            case QueryOperator.GREATER_THAN_OR_EQUAL:
-              return (item as any)[field] >= actualValue;
-            case QueryOperator.LESS_THAN:
-              return (item as any)[field] < actualValue;
-            case QueryOperator.LESS_THAN_OR_EQUAL:
-              return (item as any)[field] <= actualValue;
-            case QueryOperator.IN:
-              return (actualValue as any[]).includes((item as any)[field]);
-            case QueryOperator.NOT_IN:
-              return !(actualValue as any[]).includes((item as any)[field]);
-            case QueryOperator.CONTAINS:
-              return (item as any)[field].includes(actualValue);
-            case QueryOperator.DOES_NOT_CONTAIN:
-              return !(item as any)[field].includes(actualValue);
-            case QueryOperator.IS_NULL:
-              return (item as any)[field] === null;
-            case QueryOperator.IS_NOT_NULL:
-              return (item as any)[field] !== null;
-            default:
-              return false;
-          }
-        });
+        switch (actualOperator) {
+          case QueryOperator.EQUAL:
+            return (item as any)[field] === actualValue;
+          case QueryOperator.NOT_EQUAL:
+            return (item as any)[field] !== actualValue;
+          case QueryOperator.GREATER_THAN:
+            return (item as any)[field] > actualValue;
+          case QueryOperator.GREATER_THAN_OR_EQUAL:
+            return (item as any)[field] >= actualValue;
+          case QueryOperator.LESS_THAN:
+            return (item as any)[field] < actualValue;
+          case QueryOperator.LESS_THAN_OR_EQUAL:
+            return (item as any)[field] <= actualValue;
+          case QueryOperator.IN:
+            return (actualValue as any[]).includes((item as any)[field]);
+          case QueryOperator.NOT_IN:
+            return !(actualValue as any[]).includes((item as any)[field]);
+          case QueryOperator.CONTAINS:
+            return (item as any)[field].includes(actualValue);
+          case QueryOperator.DOES_NOT_CONTAIN:
+            return !(item as any)[field].includes(actualValue);
+          case QueryOperator.IS_NULL:
+            return (item as any)[field] === null;
+          case QueryOperator.IS_NOT_NULL:
+            return (item as any)[field] !== null;
+          default:
+            return false;
+        }
+      });
     } else {
+      // return value of the filter might be false, in case the query is being extended
+      let hasReturnValues = true;
+
       // set the query result equal to the current query result plus where function returns true
-      this.queryResult = this.queryResult.filter((item) => {
-          return field(item);
-        });
+      const filteredResult = this.queryResult.filter((item) => {
+        // call the function with the item and the query as parameters
+        const filteredItemResult = field(item, this);
+
+        // if we don't have a return value, the query is being extended
+        if (typeof filteredItemResult === 'undefined') {
+          hasReturnValues = false;
+        }
+
+        return field(item, this);
+      });
+
+      // if we have return values, we can set the query result to the filtered result
+      // otherwise, we can't set the query result to the filtered result, because the query is being extended
+      if (hasReturnValues) {
+        this.queryResult = filteredResult;
+      }
     }
 
     // filter out duplicates
     this.queryResult = this.filterDuplicates(this.queryResult);
+
+    return this;
+  }
+
+  // or where the query result
+  orWhere(field: string | Function, operator?: QueryOperator | any, value?: any): Query<T> {
+    // get the current query result
+    const currentQueryResult = this.queryResult;
+
+    // temporarily reset query results to the repository data so that we can filter through all items
+    this.setup();
+
+    // get the new query result
+    const newQueryResult = this.where(field, operator, value).get();
+
+    // set the query result equal to the current query result plus the new query result
+    const concattedQueryResult = currentQueryResult.concat(newQueryResult);
+
+    // filter out duplicates
+    this.queryResult = this.filterDuplicates(concattedQueryResult);
 
     return this;
   }
@@ -70,13 +111,21 @@ export default class Query<T> {
   }
 
   // return the first item in the query result
-  first(): T | null {
-    return this.queryResult.length > 0 ? this.queryResult[0] : null;
+  first(amount: number = 1): T | T[] | null {
+    if (this.queryResult.length === 0) {
+      return amount > 1 ? [] : null;
+    }
+
+    return amount === 1 ? this.queryResult[0] : this.queryResult.slice(0, amount);
   }
 
   // return the last item in the query result
-  last(): T | null {
-    return this.queryResult.length > 0 ? this.queryResult[this.queryResult.length - 1] : null;
+  last(amount: number = 1): T | T[] | null {
+    if (this.queryResult.length === 0) {
+      return amount > 1 ? [] : null;
+    }
+
+    return amount === 1 ? this.queryResult[this.queryResult.length - 1] : this.queryResult.slice(this.queryResult.length - amount, this.queryResult.length);
   }
 
   update(data: object): T | T[] | null {
