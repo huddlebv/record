@@ -68,7 +68,7 @@ export default class Api<T> {
 
     return new Promise(async (resolve, reject) => {
       await apiRequest
-        .callback(this.config.route ?? '' + apiRequest.url)
+        .callback(apiRequest.url ?? this.config.route)
         .then((res) => {
           let instances: T[] = [];
 
