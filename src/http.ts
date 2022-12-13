@@ -8,7 +8,7 @@ export default class Http {
     return await this.makeRequest({
       url,
       config,
-      callback: () => record.api.axiosInstance!.get(url, config),
+      callback: () => record.api.axiosInstance.get(url, config),
     });
   }
 
@@ -16,7 +16,7 @@ export default class Http {
     return await this.makeRequest({
       url,
       config,
-      callback: () => record.api.axiosInstance!.post<T>(url, data, config),
+      callback: () => record.api.axiosInstance.post<T>(url, data, config),
     });
   }
 
@@ -24,7 +24,7 @@ export default class Http {
     return await this.makeRequest({
       url,
       config,
-      callback: () => record.api.axiosInstance!.put<T>(url, data, config),
+      callback: () => record.api.axiosInstance.put<T>(url, data, config),
     });
   }
 
@@ -32,7 +32,7 @@ export default class Http {
     return await this.makeRequest({
       url,
       config,
-      callback: () => record.api.axiosInstance!.patch<T>(url, data, config),
+      callback: () => record.api.axiosInstance.patch<T>(url, data, config),
     });
   }
 
@@ -40,7 +40,7 @@ export default class Http {
     return await this.makeRequest({
       url,
       config,
-      callback: () => record.api.axiosInstance!.head<T>(url, config),
+      callback: () => record.api.axiosInstance.head<T>(url, config),
     });
   }
 
@@ -48,7 +48,7 @@ export default class Http {
     return await this.makeRequest({
       url,
       config,
-      callback: () => record.api.axiosInstance!.delete<T>(url, config),
+      callback: () => record.api.axiosInstance.delete<T>(url, config),
     });
   }
 
@@ -71,11 +71,11 @@ export default class Http {
 
   private static logRequest(url: string, config?: AxiosRequestConfig) {
     if (record.api.debug?.logRequest) {
-      console.log(`GET ${record.api.axiosInstance!.defaults.baseURL}${url}`);
+      console.log(`GET ${record.api.axiosInstance.defaults.baseURL}${url}`);
     }
 
     if (record.api.debug?.logRequestHeaders) {
-      console.log(`Request headers: ${record.api.axiosInstance!.defaults.headers}`);
+      console.log(`Request headers: ${record.api.axiosInstance.defaults.headers}`);
     }
 
     if (record.api.debug?.logRequestBody && config) {

@@ -1,11 +1,12 @@
+import axios from "axios";
 import Post from "./models/post.js";
 import { setupRecord } from "../../src/main.js";
 
 setupRecord({
   api: {
-    axiosConfig: {
+    axiosInstance: axios.create({
       baseURL: "https://my-json-server.typicode.com/typicode/demo/",
-    },
+    }),
     debug: {
       logRequest: true,
     },

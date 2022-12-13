@@ -108,7 +108,7 @@ export default class Api<T> {
 
   private returnApiOptions(options?: ApiRequestConfig): ApiRequestConfig {
     let defaultEndpointOptions: ApiRequestConfig = {
-      config: record.api.axiosConfig,
+      config: record.api.axiosInstance.defaults,
       replace: true,
       save: true,
       source: record.api.source,

@@ -3,8 +3,7 @@ import RecordConfig from './orm/interfaces/recordConfig.js';
 
 export let record: RecordConfig = {
   api: {
-    axiosInstance: null,
-    axiosConfig: undefined,
+    axiosInstance: axios.create({}),
     debug: {
       logRequest: false,
       logRequestHeaders: false,
@@ -20,5 +19,7 @@ export let record: RecordConfig = {
 export function setupRecord(config?: RecordConfig) {
   record = config ? { ...record, ...config } : record;
 
-  record.api.axiosInstance = axios.create(config?.api.axiosConfig);
+  if (config) {
+    record.api.axiosInstance = config.api.axiosInstance;
+  }
 }

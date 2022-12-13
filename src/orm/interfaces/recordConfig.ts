@@ -3,8 +3,7 @@ import DebugOptions from './axiosDebugOptions.js';
 
 export default interface RecordConfig {
   api: {
-    axiosConfig?: AxiosRequestConfig;
-    axiosInstance?: AxiosInstance | null;
+    axiosInstance: AxiosInstance;
     debug?: DebugOptions;
     source?: string | null;
   };
