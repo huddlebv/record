@@ -2,7 +2,7 @@ import { record } from './main.js';
 import type { AxiosResponse } from 'axios';
 import type { AxiosRequestConfig } from 'axios';
 import type HttpRequest from './orm/interfaces/httpRequest.js';
-import HttpRequestMethod from "./orm/enums/httpRequestMethod.js";
+import HttpRequestMethod from './orm/enums/httpRequestMethod.js';
 
 export default class Http {
   static async get<T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse> {
@@ -67,7 +67,12 @@ export default class Http {
       baseUrl = baseUrl.replace(/(https?:\/\/[^\/]+\/).*/, '$1');
 
       // combine the axios base url with the request base url
-      baseUrl = baseUrl + (baseUrl.endsWith('/') && apiRequest.config.baseURL.startsWith('/') ? apiRequest.config.baseURL.slice(1) : apiRequest.config.baseURL) + '/';
+      baseUrl =
+        baseUrl +
+        (baseUrl.endsWith('/') && apiRequest.config.baseURL.startsWith('/')
+          ? apiRequest.config.baseURL.slice(1)
+          : apiRequest.config.baseURL) +
+        '/';
     }
 
     this.logRequest(apiRequest, baseUrl!);
