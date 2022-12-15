@@ -2,7 +2,7 @@ import Http from '../http.js';
 import type Repository from './repository.js';
 import type { ApiRequestConfig } from './interfaces/apiRequestConfig.js';
 import type InternalApiRequest from './interfaces/internalApiRequest.js';
-import HttpRequest from './enums/httpRequest.js';
+import HttpRequestMethod from './enums/httpRequestMethod.js';
 import { record } from '../main.js';
 import ApiModelConfig from './interfaces/apiModelConfig.js';
 import ApiResponse from './interfaces/apiResponse.js';
@@ -11,7 +11,7 @@ export default class Api<T> {
   constructor(protected model: any, protected repository: Repository<T>, protected config: ApiModelConfig) {}
 
   async get(endpoint?: string, options?: ApiRequestConfig): Promise<ApiResponse<T>> {
-    return await this.makeRequest(HttpRequest.GET, {
+    return await this.makeRequest(HttpRequestMethod.GET, {
       url: endpoint,
       options,
       callback: (url: string) => Http.get(url, options?.config),
@@ -19,7 +19,7 @@ export default class Api<T> {
   }
 
   async post(endpoint: string, data?: any, options?: ApiRequestConfig): Promise<ApiResponse<T>> {
-    return await this.makeRequest(HttpRequest.POST, {
+    return await this.makeRequest(HttpRequestMethod.POST, {
       url: endpoint,
       options,
       callback: (url: string) => Http.post(url, data, options?.config),
@@ -32,7 +32,7 @@ export default class Api<T> {
      * We can fix this but we'll have to write a function that can update a model and all of its relationships.
      */
 
-    return await this.makeRequest(HttpRequest.PUT, {
+    return await this.makeRequest(HttpRequestMethod.PUT, {
       url: endpoint,
       options,
       callback: (url: string) => Http.put(url, data, options?.config),
@@ -40,7 +40,7 @@ export default class Api<T> {
   }
 
   async patch(endpoint: string, data?: any, options?: ApiRequestConfig): Promise<ApiResponse<T>> {
-    return await this.makeRequest(HttpRequest.PATCH, {
+    return await this.makeRequest(HttpRequestMethod.PATCH, {
       url: endpoint,
       options,
       callback: (url: string) => Http.patch(url, data, options?.config),
@@ -48,7 +48,7 @@ export default class Api<T> {
   }
 
   async head(endpoint: string, options?: ApiRequestConfig): Promise<ApiResponse<T>> {
-    return await this.makeRequest(HttpRequest.HEAD, {
+    return await this.makeRequest(HttpRequestMethod.HEAD, {
       url: endpoint,
       options,
       callback: (url: string) => Http.head(url, options?.config),
@@ -56,14 +56,14 @@ export default class Api<T> {
   }
 
   async delete(endpoint: string, options?: ApiRequestConfig): Promise<ApiResponse<T>> {
-    return await this.makeRequest(HttpRequest.DELETE, {
+    return await this.makeRequest(HttpRequestMethod.DELETE, {
       url: endpoint,
       options,
       callback: (url: string) => Http.delete(url, options?.config),
     });
   }
 
-  private async makeRequest(method: HttpRequest, apiRequest: InternalApiRequest): Promise<ApiResponse<T>> {
+  private async makeRequest(method: HttpRequestMethod, apiRequest: InternalApiRequest): Promise<ApiResponse<T>> {
     const requestOptions: ApiRequestConfig = this.returnApiOptions(apiRequest.options);
 
     return new Promise(async (resolve, reject) => {
@@ -72,7 +72,7 @@ export default class Api<T> {
         .then((res) => {
           let instances: T[] = [];
 
-          if (![HttpRequest.HEAD, HttpRequest.DELETE].includes(method) && requestOptions.save) {
+          if (![HttpRequestMethod.HEAD, HttpRequestMethod.DELETE].includes(method) && requestOptions.save) {
             const dataToTransform = requestOptions.source ? res.data[requestOptions.source] : res.data;
 
             if (dataToTransform) {
@@ -89,7 +89,7 @@ export default class Api<T> {
                 instances.push(savedInstances);
               }
             }
-          } else if (method === HttpRequest.DELETE && typeof requestOptions.delete !== 'undefined') {
+          } else if (method === HttpRequestMethod.DELETE && typeof requestOptions.delete !== 'undefined') {
             this.repository.delete(requestOptions.delete, requestOptions.deleteValue, {
               dataset: requestOptions?.dataset ?? 'all',
             });
