@@ -93,29 +93,29 @@ export default class Http {
 
   private static logRequest(apiRequest: HttpRequest, baseUrl: string) {
     if (record.api.debug?.logRequest) {
-      console.log(`${apiRequest.requestMethod} ${baseUrl}${apiRequest.url}`);
+      console.log(`Request: ${apiRequest.requestMethod} ${baseUrl}${apiRequest.url}`);
     }
 
     if (record.api.debug?.logRequestHeaders) {
-      console.log(`Request headers: ${apiRequest.config?.headers}`);
+      console.log(`Headers - ${apiRequest.config?.headers}`);
     }
 
     if (record.api.debug?.logRequestBody && apiRequest.config) {
-      console.log(`Request body: ${apiRequest.config.data}`);
+      console.log(`Body - ${apiRequest.config.data}`);
     }
   }
 
   private static logResponse(response: AxiosResponse, apiRequest: HttpRequest, baseUrl: string) {
     if (record.api.debug?.logRequest) {
-      console.log(`${apiRequest.requestMethod} ${baseUrl}${apiRequest.url}`);
+      console.log(`Response: ${apiRequest.requestMethod} ${baseUrl}${apiRequest.url}`);
     }
 
     if (record.api.debug?.logResponseStatus) {
-      console.log(`Status: ${response.status} ${response.statusText}`);
+      console.log(`Status - ${response.status} ${response.statusText}`);
     }
 
     if (record.api.debug?.logResponseHeaders) {
-      console.log(`Response headers: ${response.headers}`);
+      console.log(`Headers - ${response.headers}`);
     }
 
     if (record.api.debug?.logResponseBody) {
