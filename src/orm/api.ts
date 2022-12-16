@@ -72,7 +72,7 @@ export default class Api<T> {
         .then((res) => {
           let instances: T[] = [];
 
-          if (![HttpRequestMethod.HEAD, HttpRequestMethod.DELETE].includes(method) && requestOptions.save) {
+          if (![HttpRequestMethod.HEAD, HttpRequestMethod.DELETE].includes(method)) {
             const dataToTransform = requestOptions.source ? res.data[requestOptions.source] : res.data;
 
             if (dataToTransform) {
