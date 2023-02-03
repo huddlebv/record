@@ -81,7 +81,7 @@ export default class Repository<T> {
     return this.find(id, options) !== null;
   }
 
-  // function that saves or updates the data in the store
+  // function that saves the data in the store
   save(data: T | T[] | object, options?: StoreSaveOptions): T | T[] | null {
     if (!this.datasetExists(options?.dataset)) {
       return null;
@@ -107,6 +107,26 @@ export default class Repository<T> {
     } else {
       this.deleteSingleItem(key, value, options);
     }
+  }
+
+  update(id: number, data: object, options?: QueryOptions): T | null {
+    if (!this.datasetExists(options?.dataset)) {
+      return null;
+    }
+
+    const item = this.find(id, options);
+
+    if (item === null) {
+      return null;
+    }
+
+    (item as any).beforeUpdate();
+
+    Object.assign((item as any), data);
+
+    (item as any).afterUpdate();
+
+    return item;
   }
 
   // deleteSingleItem by id or by key/value pair
@@ -169,7 +189,9 @@ export default class Repository<T> {
 
         // check if the item already exists in the store
         if (id !== null) {
-          const match = this.find(id);
+          const match = this.find(id, {
+            dataset: options?.dataset ?? 'all',
+          });
 
           if (match !== null) {
             // if it does, fire the beforeUpdate event
@@ -227,7 +249,9 @@ export default class Repository<T> {
     const id = (data as any).id;
 
     // if we don't already have the data in the store, add it
-    if (!this.find(id)) {
+    if (!this.find(id, {
+      dataset: options?.dataset ?? 'all',
+    })) {
       if (!this.datasetExists(key)) {
         this.data[key] = [];
       }
@@ -249,7 +273,9 @@ export default class Repository<T> {
 
       (match as any).afterUpdate(data);
 
-      return this.find(id);
+      return this.find(id, {
+        dataset: options?.dataset ?? 'all',
+      });
     }
 
     return null;
