@@ -122,7 +122,7 @@ export default class Repository<T> {
 
     (item as any).beforeUpdate();
 
-    Object.assign((item as any), data);
+    Object.assign(item as any, data);
 
     (item as any).afterUpdate();
 
@@ -249,9 +249,11 @@ export default class Repository<T> {
     const id = (data as any).id;
 
     // if we don't already have the data in the store, add it
-    if (!this.find(id, {
-      dataset: options?.dataset ?? 'all',
-    })) {
+    if (
+      !this.find(id, {
+        dataset: options?.dataset ?? 'all',
+      })
+    ) {
       if (!this.datasetExists(key)) {
         this.data[key] = [];
       }
