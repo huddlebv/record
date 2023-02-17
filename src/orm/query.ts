@@ -111,23 +111,28 @@ export default class Query<T> {
   }
 
   // return the first item in the query result
-  first(amount: number = 1): T | T[] | null {
+  first(amount: number = 1): T | null {
     if (this.queryResult.length === 0) {
-      return amount > 1 ? [] : null;
+      return null;
     }
 
-    return amount === 1 ? this.queryResult[0] : this.queryResult.slice(0, amount);
+    return this.queryResult[0];
   }
 
   // return the last item in the query result
-  last(amount: number = 1): T | T[] | null {
+  last(amount: number = 1): T | null {
     if (this.queryResult.length === 0) {
-      return amount > 1 ? [] : null;
+      return null;
     }
 
-    return amount === 1
-      ? this.queryResult[this.queryResult.length - 1]
-      : this.queryResult.slice(this.queryResult.length - amount, this.queryResult.length);
+    return this.queryResult[this.queryResult.length - 1];
+  }
+
+  // take the first x items in the query result
+  take(amount: number = 1): Query<T> {
+    this.queryResult = this.queryResult.slice(0, amount);
+
+    return this;
   }
 
   update(data: object): T | T[] | null {
