@@ -32,7 +32,7 @@ export default class Repository<T> {
   }
 
   // return the first item in the store
-  first(amount: number = 1, options?: QueryOptions): T | T[] | null {
+  first(options?: QueryOptions): T | null {
     if (!this.datasetExists(options?.dataset)) {
       return null;
     }
@@ -40,14 +40,14 @@ export default class Repository<T> {
     const key = options?.dataset ?? 'all';
 
     if (this.data[key].length === 0) {
-      return amount > 0 ? [] : null;
+      return null;
     }
 
-    return amount === 1 ? this.data[key][0] : this.data[key].slice(0, amount);
+    return this.data[key][0];
   }
 
   // return the last item in the store
-  last(amount: number = 1, options?: QueryOptions): T | T[] | null {
+  last(options?: QueryOptions): T | null {
     if (!this.datasetExists(options?.dataset)) {
       return null;
     }
@@ -55,12 +55,25 @@ export default class Repository<T> {
     const key = options?.dataset ?? 'all';
 
     if (this.data[key].length === 0) {
-      return amount > 0 ? [] : null;
+      return null;
     }
 
-    return amount === 1
-      ? this.data[key][this.data[key].length - 1]
-      : this.data[key].slice(this.data[key].length - amount, this.data[key].length);
+    return this.data[key][this.data[key].length - 1];
+  }
+
+  // take n number of items from the store
+  take(amount: number, options?: QueryOptions): T[] {
+    if (!this.datasetExists(options?.dataset)) {
+      return [];
+    }
+
+    const key = options?.dataset ?? 'all';
+
+    if (this.data[key].length === 0) {
+      return [];
+    }
+
+    return this.data[key].slice(0, amount);
   }
 
   // return the count of the data in the store
