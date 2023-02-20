@@ -267,7 +267,7 @@ export default class Repository<T> {
         dataset: options?.dataset ?? 'all',
       })
     ) {
-      if (!this.datasetExists(key, false)) {
+      if (!this.datasetExists(key)) {
         this.data[key] = [];
       }
 
@@ -307,14 +307,8 @@ export default class Repository<T> {
     return options ? { ...defaultEndpointOptions, ...options } : defaultEndpointOptions;
   }
 
-  datasetExists(key?: string, logWarning = true): boolean {
-    const exists = typeof this.data[key ?? 'all'] !== 'undefined';
-
-    if (!exists && logWarning) {
-      console.log("Record | Dataset doesn't exist, returning empty array");
-    }
-
-    return exists;
+  datasetExists(key?: string): boolean {
+    return typeof this.data[key ?? 'all'] !== 'undefined';
   }
 
   query(options?: QueryOptions): Query<T> {

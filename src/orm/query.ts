@@ -10,11 +10,10 @@ export default class Query<T> {
 
   private setup() {
     if (!this.repository.datasetExists(this.key)) {
-      console.log("Record | Query | Dataset doesn't exist, returning empty array");
       this.queryResult = [];
+    } else {
+      this.queryResult = this.repository.data[this.key];
     }
-
-    this.queryResult = this.repository.data[this.key];
   }
 
   // filter the query result by function or key value pair with optional operator
