@@ -9,6 +9,10 @@ export default class Query<T> {
   }
 
   private setup() {
+    if (!this.repository.datasetExists(this.key)) {
+      this.queryResult = [];
+    }
+
     this.queryResult = this.repository.data[this.key];
   }
 
