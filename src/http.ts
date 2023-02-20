@@ -93,33 +93,33 @@ export default class Http {
 
   private static logRequest(apiRequest: HttpRequest, baseUrl: string) {
     if (record.api.debug?.logRequest) {
-      console.log(`Request: ${apiRequest.requestMethod} ${baseUrl}${apiRequest.url}`);
+      console.log(`Record | Request: ${apiRequest.requestMethod} ${baseUrl}${apiRequest.url}`);
     }
 
     if (record.api.debug?.logRequestHeaders) {
-      console.log(`Headers - ${apiRequest.config?.headers}`);
+      console.log(`Record | Headers - ${apiRequest.config?.headers}`);
     }
 
     if (record.api.debug?.logRequestBody && apiRequest.config) {
-      console.log(`Body - ${apiRequest.config.data}`);
+      console.log(`Record | Body - ${apiRequest.config.data}`);
     }
   }
 
   private static logResponse(response: AxiosResponse, apiRequest: HttpRequest, baseUrl: string) {
     if (record.api.debug?.logRequest) {
-      console.log(`Response: ${apiRequest.requestMethod} ${baseUrl}${apiRequest.url}`);
+      console.log(`Record | Response: ${apiRequest.requestMethod} ${baseUrl}${apiRequest.url}`);
     }
 
     if (record.api.debug?.logResponseStatus) {
-      console.log(`Status - ${response.status} ${response.statusText}`);
+      console.log(`Record | Status - ${response.status} ${response.statusText}`);
     }
 
     if (record.api.debug?.logResponseHeaders) {
-      console.log(`Headers - ${response.headers}`);
+      console.log(`Record | Headers - ${response.headers}`);
     }
 
     if (record.api.debug?.logResponseBody) {
-      console.log(`Response body: ${response.data}`);
+      console.log(`Record | Response body: ${response.data}`);
     }
   }
 }

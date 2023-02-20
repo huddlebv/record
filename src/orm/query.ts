@@ -10,6 +10,7 @@ export default class Query<T> {
 
   private setup() {
     if (!this.repository.datasetExists(this.key)) {
+      console.log("Record | Query | Dataset doesn't exist, returning empty array");
       this.queryResult = [];
     }
 
@@ -18,10 +19,6 @@ export default class Query<T> {
 
   // filter the query result by function or key value pair with optional operator
   where(field: string | Function, operator?: QueryOperator | any, value?: any): Query<T> {
-    if (!this.repository.datasetExists(this.key)) {
-      return this;
-    }
-
     if (typeof field === 'string') {
       // operator can be an actual operator or the value, depending on if a operator is provided
       // if no operator is provided, the operator is assumed to be QueryOperator.Equal
@@ -132,8 +129,8 @@ export default class Query<T> {
     return this.queryResult[this.queryResult.length - 1];
   }
 
-  // take the first x items in the query result
-  take(amount: number = 1): Query<T> {
+  // only grab the first x items in the query result
+  limit(amount: number = 1): Query<T> {
     this.queryResult = this.queryResult.slice(0, amount);
 
     return this;
