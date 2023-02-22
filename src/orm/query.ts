@@ -182,9 +182,9 @@ export default class Query<T> {
     } else {
       this.queryResult = this.queryResult.sort((a, b) => {
         if (direction === 'asc') {
-          return field(a, b) > 0 ? 1 : -1;
+          return field(a) > field(b) ? 1 : -1;
         } else {
-          return field(a, b) < 0 ? 1 : -1;
+          return field(a) < field(b) ? 1 : -1;
         }
       });
     }
