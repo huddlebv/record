@@ -96,8 +96,15 @@ export default class Repository<T> {
 
   // function that saves the data in the store
   save(data: T | T[] | object, options?: StoreSaveOptions): T | T[] | null {
-    if (!this.datasetExists(options?.dataset)) {
+    if (options && options.replace && options.update) {
+      console.error('You cannot use the replace and update options at the same time');
+
       return null;
+    }
+
+    // create the dataset if it doesn't exist
+    if (options?.dataset && !this.datasetExists(options?.dataset)) {
+      this.data[options.dataset] = [];
     }
 
     const saveOptions: StoreSaveOptions = this.returnSaveOptions(options);
@@ -178,7 +185,7 @@ export default class Repository<T> {
   }
 
   // transforms json data into an instance of the model
-  transform(data: any, options?: StoreSaveOptions): T | T[] {
+  transform(data: any, options: StoreSaveOptions): T | T[] {
     const instanceData: any[] = [];
     const isArray = Array.isArray(data);
     const dataToTransform = isArray ? data : [data];
@@ -203,16 +210,28 @@ export default class Repository<T> {
         // check if the item already exists in the store
         if (id !== null) {
           const match = this.find(id, {
-            dataset: options?.dataset ?? 'all',
+            dataset: options.dataset ?? 'all',
           });
 
           if (match !== null) {
-            // if it does, fire the beforeUpdate event
-            (match as any).beforeUpdate(data);
+            if (options.update) {
+              // update the existing model
+              shouldInstantiate = false;
+
+              this.update(id, item, {
+                dataset: options.dataset ?? 'all',
+              });
+            } else if (options.replace) {
+              // fire the beforeUpdate event
+              (match as any).beforeUpdate(data);
+            } else {
+              // a match exists but we don't want to update or replace it, so we don't need to do anything
+              return;
+            }
           }
         }
       } else {
-        // if it is a existing model, fire the beforeUpdate event
+        // if it is an existing model, fire the beforeUpdate event
         (item as any).beforeUpdate(data);
       }
 
@@ -229,7 +248,7 @@ export default class Repository<T> {
     }
 
     // persist the data if needed
-    if (options?.save) {
+    if (options.save) {
       this.persist(instanceData, options);
     }
 
@@ -238,7 +257,7 @@ export default class Repository<T> {
   }
 
   // add the data to the store
-  persist(data: T | T[], options?: StoreSaveOptions): T | T[] | null {
+  persist(data: T | T[], options: StoreSaveOptions): T | T[] | null {
     if (Array.isArray(data)) {
       const persistedData: T[] = [];
 
@@ -257,14 +276,14 @@ export default class Repository<T> {
   }
 
   // add the data to the store if it doesn't already exist or replace the existing data with the new data
-  private persistSingleItem(data: T, options?: StoreSaveOptions): T | null {
-    const key = options?.dataset ?? 'all';
+  private persistSingleItem(data: T, options: StoreSaveOptions): T | null {
+    const key = options.dataset ?? 'all';
     const id = (data as any).id;
 
     // if we don't already have the data in the store, add it
     if (
       !this.find(id, {
-        dataset: options?.dataset ?? 'all',
+        dataset: options.dataset ?? 'all',
       })
     ) {
       if (!this.datasetExists(key)) {
@@ -274,7 +293,7 @@ export default class Repository<T> {
       this.data[key].push(data);
 
       return data;
-    } else if (options?.replace) {
+    } else if (options.replace) {
       let match = null;
 
       // replace the existing data with the new data
@@ -289,7 +308,7 @@ export default class Repository<T> {
       (match as any).afterUpdate(data);
 
       return this.find(id, {
-        dataset: options?.dataset ?? 'all',
+        dataset: options.dataset ?? 'all',
       });
     }
 
@@ -300,6 +319,7 @@ export default class Repository<T> {
   private returnSaveOptions(options?: StoreSaveOptions): StoreSaveOptions {
     const defaultEndpointOptions: StoreSaveOptions = {
       replace: true,
+      update: false,
       save: true,
       dataset: 'all',
     };

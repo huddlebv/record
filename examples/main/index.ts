@@ -13,5 +13,6 @@ setupRecord({
   },
 });
 
-// await for posts to be fetched
 await Post.api.get();
+
+console.log(Post.store.count());
