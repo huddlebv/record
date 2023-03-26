@@ -5,14 +5,15 @@ import Hobby from "./hobby.js";
 
 export default class Post extends Model {
   _title: string = "";
+  someVar: number;
 
   constructor(map: any) {
     super(Post, map);
 
     this.id = map["id"];
     this.title = map["title"];
-
-    this.setupRelation<Hobby>(Hobby, map["hobbies"]);
+    this.someVar = map["someVar"] ?? 10;
+    this.hobbies = map["hobbies"];
   }
 
   static store: PostRepository<Post> = new PostRepository<Post>(this);
@@ -23,6 +24,10 @@ export default class Post extends Model {
 
   get hobbies(): Hobby[] | null {
     return this.hasMany<Hobby>(Hobby, "postId");
+  }
+
+  set hobbies(value: any) {
+    this.setupRelation<Hobby>(Hobby, value);
   }
 
   // set title to uppercase
