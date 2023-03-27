@@ -162,7 +162,7 @@ export default class Repository<T> {
     itemsToDelete.forEach((item) => (item as any).beforeDelete());
 
     // filter out the items that do not match the id
-    this.data.all = this.data[dataKey].filter((item) => (item as any)[filterNeedle] !== filterValue);
+    this.data[dataKey] = this.data[dataKey].filter((item) => (item as any)[filterNeedle] !== filterValue);
 
     // call afterDelete on each item
     itemsToDelete.forEach((item) => (item as any).afterDelete());
