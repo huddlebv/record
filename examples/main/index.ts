@@ -13,6 +13,6 @@ setupRecord({
   },
 });
 
-await Post.api.get();
+await Post.api.get("");
 
 console.log(Post.store.count());
