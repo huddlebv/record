@@ -143,7 +143,6 @@ export default class Repository<T> {
     (item as any).beforeUpdate();
 
     this.deepUpdate(item, data);
-    // Object.assign(item as any, data);
 
     (item as any).afterUpdate();
 
