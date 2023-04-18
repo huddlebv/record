@@ -25,10 +25,7 @@ function runUpdateTests() {
       {
         id: 1,
       },
-      {
-        id: 2,
-      },
-    ]
+    ],
   });
 
   Post.store.update(1, {
@@ -50,6 +47,7 @@ function runUpdateTests() {
       name: "User 2",
     },
     likes: [],
+    likedNames: ["User 1", "User 2"],
   });
 
   if (Post.store.first()!.user?.name !== "User 2") {
@@ -70,5 +68,13 @@ function runUpdateTests() {
 
   if (Post.store.first()!.likes?.length !== 0) {
     console.error("Post likes length is not 0");
+  }
+
+  if (Post.store.first()!.likedNames?.length !== 2) {
+    console.error("Post likedNames length is not 2");
+  }
+
+  if (Post.store.first()!.likedNames![0] !== "User 1") {
+    console.error("Post likedNames[0] is not User 1");
   }
 }

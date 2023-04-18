@@ -5,6 +5,12 @@ import Hobby from "./hobby.js";
 import User from "./user";
 import type LikeInterface from "../interfaces/likeInterface";
 
+enum PostType {
+  TEXT = "text",
+  IMAGE = "image",
+  VIDEO = "video",
+}
+
 export default class Post extends Model {
   propTypes = {
     hobbies: Hobby,
@@ -16,6 +22,8 @@ export default class Post extends Model {
   // hobbies: Hobby[] = [];
   user?: User | null;
   likes?: LikeInterface[] | null;
+  type: PostType = PostType.TEXT;
+  likedNames: string[] = [];
 
   constructor(map: any) {
     super(Post, map);
@@ -27,6 +35,8 @@ export default class Post extends Model {
     // this.hobbies = map["hobbies"] ? map["hobbies"].map((hobby: any) => new Hobby(hobby)) : [];
     this.user = map["user"] ? new User(map["user"]) : null;
     this.likes = map["likes"] ?? [];
+    this.type = map["type"] ?? PostType.TEXT;
+    this.likedNames = map["likedNames"] ?? [];
   }
 
   static store: PostRepository<Post> = new PostRepository<Post>(this);
