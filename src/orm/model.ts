@@ -19,8 +19,12 @@ export default class Model {
     return this.model.api.save();
   }
 
-  setupRelation<T>(model: any, data: any) {
+  setupRelation<T>(model: any, data: any, key: string) {
     if (data) {
+      // delete all existing relations
+      (model.store as Repository<T>).query().where(key, this.id).delete();
+
+      // add new relations
       (model.store as Repository<T>).transform(data, {
         save: true,
         replace: true,

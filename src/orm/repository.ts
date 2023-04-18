@@ -142,7 +142,8 @@ export default class Repository<T> {
 
     (item as any).beforeUpdate();
 
-    Object.assign(item as any, data);
+    this.deepUpdate(item, data);
+    // Object.assign(item as any, data);
 
     (item as any).afterUpdate();
 
@@ -325,6 +326,121 @@ export default class Repository<T> {
     };
 
     return options ? { ...defaultEndpointOptions, ...options } : defaultEndpointOptions;
+  }
+
+  /*deepUpdate(target: any, source: any) {
+    if (!target) {
+      return;
+    }
+
+    for (const key of Object.keys(source)) {
+      if (typeof source[key] === 'object' && source[key] !== null) {
+        if (Array.isArray(source[key])) {
+          if (!Array.isArray(target[key])) {
+            target[key] = [];
+          }
+
+          for (let i = 0; i < source[key].length; i++) {
+            if (typeof source[key][i] === 'object' && source[key][i] !== null) {
+              if (target[key][i] === undefined || !(target[key][i] instanceof Object)) {
+                target[key][i] = Array.isArray(source[key][i]) ? [] : {};
+              }
+              this.deepUpdate(target[key][i], source[key][i]);
+            } else {
+              target[key][i] = source[key][i];
+            }
+          }
+        } else {
+          if (typeof target[key] !== 'object' || target[key] === null) {
+            target[key] = {};
+          }
+
+          this.deepUpdate(target[key], source[key]);
+        }
+      } else {
+        target[key] = source[key];
+      }
+    }
+  }*/
+
+  deepUpdate(item: any, newData: object): void {
+    // for each field that needs to be updated
+    Object.entries(newData).forEach(([key, value]) => {
+      // if its an array
+      if (Array.isArray(value)) {
+        // if the item doesn't have the array, create it
+        if (item[key] === undefined) {
+          item[key] = [];
+        }
+
+        // for each item in the array
+        value.forEach((arrayItem, index) => {
+          // if the item doesn't exist, we need to create it
+          if (item[key][index] === undefined) {
+            // if the item has a model constructor, we need to create a new instance of that model
+            const ModelConstructor = item.propTypes[key];
+            if (ModelConstructor) {
+              // if the item has a getter/setter, we need to set the value as an array
+              const descriptor = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(item), key);
+              const hasGetterSetter = descriptor && (descriptor.get || descriptor.set);
+
+              // create the new instance
+              const newItem = this.createModelInstance(item, arrayItem, key);
+
+              if (newItem) {
+                // add the new instance to the array
+                hasGetterSetter ? item[key] = [...item[key], newItem] : item[key].push(newItem);
+              }
+            }
+          } else {
+            // if the item already exists, we just need to recursively update it
+            this.deepUpdate(item[key][index], arrayItem);
+          }
+        });
+
+        // if the array is shorter than the new array, we need to remove the extra items
+        if (value.length < item[key].length) {
+          // if the item has a getter/setter, we need to set the value as an array
+          const descriptor = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(item), key);
+          const hasGetterSetter = descriptor && (descriptor.get || descriptor.set);
+
+          // remove all items after the new array length
+          hasGetterSetter ? item[key] = item[key].slice(0, value.length) : item[key].splice(value.length);
+        }
+
+        // if its an object
+      } else if (typeof value === 'object' && value !== null) {
+        // if the item doesn't exist, we need to create it
+        if (item[key] === undefined || !item[key]) {
+          // if the item has a model constructor, we need to create a new instance of that model
+          const newItem = this.createModelInstance(item, value, key);
+
+          if (newItem) {
+            // replace the item with the new instance
+            item[key] = newItem;
+          }
+        } else {
+          // if the item already exists, we just need to recursively update it
+          this.deepUpdate(item[key], value);
+        }
+      } else {
+        // if its not an array or object, we can just set the value
+        item[key] = value;
+      }
+    });
+  }
+
+  // if the item has a model constructor, we need to create a new instance of that model
+  private createModelInstance(item: any, value: any, key: string): any {
+    const ModelConstructor = item.propTypes[key];
+
+    if (ModelConstructor) {
+      const newItem = new ModelConstructor(value);
+
+      this.deepUpdate(newItem, value);
+
+      return newItem;
+    }
   }
 
   datasetExists(key?: string): boolean {

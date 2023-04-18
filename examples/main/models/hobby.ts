@@ -17,6 +17,10 @@ export default class Hobby extends Model {
     route: 'hobbies',
   });
 
+  get testy(): string {
+    return "testy";
+  }
+
   declare id: number;
   declare postId: number;
   declare name: string;
