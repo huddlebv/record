@@ -328,41 +328,6 @@ export default class Repository<T> {
     return options ? { ...defaultEndpointOptions, ...options } : defaultEndpointOptions;
   }
 
-  /*deepUpdate(target: any, source: any) {
-    if (!target) {
-      return;
-    }
-
-    for (const key of Object.keys(source)) {
-      if (typeof source[key] === 'object' && source[key] !== null) {
-        if (Array.isArray(source[key])) {
-          if (!Array.isArray(target[key])) {
-            target[key] = [];
-          }
-
-          for (let i = 0; i < source[key].length; i++) {
-            if (typeof source[key][i] === 'object' && source[key][i] !== null) {
-              if (target[key][i] === undefined || !(target[key][i] instanceof Object)) {
-                target[key][i] = Array.isArray(source[key][i]) ? [] : {};
-              }
-              this.deepUpdate(target[key][i], source[key][i]);
-            } else {
-              target[key][i] = source[key][i];
-            }
-          }
-        } else {
-          if (typeof target[key] !== 'object' || target[key] === null) {
-            target[key] = {};
-          }
-
-          this.deepUpdate(target[key], source[key]);
-        }
-      } else {
-        target[key] = source[key];
-      }
-    }
-  }*/
-
   deepUpdate(item: any, newData: object): void {
     // for each field that needs to be updated
     Object.entries(newData).forEach(([key, value]) => {
