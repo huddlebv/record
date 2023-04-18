@@ -353,7 +353,7 @@ export default class Repository<T> {
 
               if (newItem) {
                 // add the new instance to the array
-                hasGetterSetter ? item[key] = [...item[key], newItem] : item[key].push(newItem);
+                hasGetterSetter ? (item[key] = [...item[key], newItem]) : item[key].push(newItem);
               }
             }
           } else {
@@ -369,7 +369,7 @@ export default class Repository<T> {
           const hasGetterSetter = descriptor && (descriptor.get || descriptor.set);
 
           // remove all items after the new array length
-          hasGetterSetter ? item[key] = item[key].slice(0, value.length) : item[key].splice(value.length);
+          hasGetterSetter ? (item[key] = item[key].slice(0, value.length)) : item[key].splice(value.length);
         }
 
         // if its an object
