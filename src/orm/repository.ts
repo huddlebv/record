@@ -341,19 +341,31 @@ export default class Repository<T> {
         value.forEach((arrayItem, index) => {
           // if the item doesn't exist, we need to create it
           if (item[key][index] === undefined) {
-            // if the item has a model constructor, we need to create a new instance of that model
-            const ModelConstructor = item.propTypes[key];
-            if (ModelConstructor) {
-              // if the item has a getter/setter, we need to set the value as an array
-              const descriptor = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(item), key);
-              const hasGetterSetter = descriptor && (descriptor.get || descriptor.set);
+            if (typeof item.propTypes === 'undefined' || typeof item.propTypes[key] === 'undefined') {
+              if (typeof arrayItem === 'string') {
+                item[key][index] = arrayItem;
+              } else {
+                if (typeof arrayItem === 'object' && typeof item[key][index] === 'undefined') {
+                  item[key][index] = {};
+                }
 
-              // create the new instance
-              const newItem = this.createModelInstance(item, arrayItem, key);
+                this.deepUpdate(item[key][index], arrayItem);
+              }
+            } else {
+              // if the item has a model constructor, we need to create a new instance of that model
+              const ModelConstructor = item.propTypes[key];
+              if (ModelConstructor) {
+                // if the item has a getter/setter, we need to set the value as an array
+                const descriptor = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(item), key);
+                const hasGetterSetter = descriptor && (descriptor.get || descriptor.set);
 
-              if (newItem) {
-                // add the new instance to the array
-                hasGetterSetter ? (item[key] = [...item[key], newItem]) : item[key].push(newItem);
+                // create the new instance
+                const newItem = this.createModelInstance(item, arrayItem, key);
+
+                if (newItem) {
+                  // add the new instance to the array
+                  hasGetterSetter ? (item[key] = [...item[key], newItem]) : item[key].push(newItem);
+                }
               }
             }
           } else {
@@ -396,15 +408,21 @@ export default class Repository<T> {
 
   // if the item has a model constructor, we need to create a new instance of that model
   private createModelInstance(item: any, value: any, key: string): any {
+    if (typeof item.propTypes === 'undefined') {
+      return;
+    }
+
     const ModelConstructor = item.propTypes[key];
 
-    if (ModelConstructor) {
-      const newItem = new ModelConstructor(value);
-
-      this.deepUpdate(newItem, value);
-
-      return newItem;
+    if (!ModelConstructor) {
+      return;
     }
+
+    const newItem = new ModelConstructor(value);
+
+    this.deepUpdate(newItem, value);
+
+    return newItem;
   }
 
   datasetExists(key?: string): boolean {
