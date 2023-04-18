@@ -1,6 +1,6 @@
 import axios from "axios";
-import Post from "./models/post.js";
 import { setupRecord } from "../../src/main.js";
+import runTests from "./tests.js";
 
 setupRecord({
   api: {
@@ -13,6 +13,4 @@ setupRecord({
   },
 });
 
-await Post.api.get("");
-
-console.log(Post.store.count());
+runTests();

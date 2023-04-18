@@ -2,10 +2,20 @@ import Model from "../../../src/orm/model.js";
 import PostRepository from "../repositories/postRepository.js";
 import PostService from "../services/postService.js";
 import Hobby from "./hobby.js";
+import User from "./user";
+import type LikeInterface from "../interfaces/likeInterface";
 
 export default class Post extends Model {
-  _title: string = "";
+  propTypes = {
+    hobbies: Hobby,
+    user: User,
+  };
+
+  title: string | null;
   someVar: number;
+  // hobbies: Hobby[] = [];
+  user?: User | null;
+  likes?: LikeInterface[] | null;
 
   constructor(map: any) {
     super(Post, map);
@@ -14,6 +24,9 @@ export default class Post extends Model {
     this.title = map["title"];
     this.someVar = map["someVar"] ?? 10;
     this.hobbies = map["hobbies"];
+    // this.hobbies = map["hobbies"] ? map["hobbies"].map((hobby: any) => new Hobby(hobby)) : [];
+    this.user = map["user"] ? new User(map["user"]) : null;
+    this.likes = map["likes"] ?? [];
   }
 
   static store: PostRepository<Post> = new PostRepository<Post>(this);
@@ -27,17 +40,7 @@ export default class Post extends Model {
   }
 
   set hobbies(value: any) {
-    this.setupRelation<Hobby>(Hobby, value);
-  }
-
-  // set title to uppercase
-  set title(value: string | null) {
-    this._title = value ? value.toUpperCase() : '';
-  }
-
-  // get title
-  get title(): string {
-    return this._title;
+    this.setupRelation<Hobby>(Hobby, value, "postId");
   }
 
   declare id: number;

@@ -140,7 +140,7 @@ export default class Query<T> {
     this.queryResult.forEach((item) => {
       (item as any).beforeUpdate(data);
 
-      Object.assign(item as any, data);
+      this.repository.deepUpdate(item, data);
 
       (item as any).afterUpdate(item);
     });

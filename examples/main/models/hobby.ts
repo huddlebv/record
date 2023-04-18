@@ -17,6 +17,10 @@ export default class Hobby extends Model {
     route: 'hobbies',
   });
 
+  get uppercaseName(): string {
+    return this.name.toUpperCase();
+  }
+
   declare id: number;
   declare postId: number;
   declare name: string;
