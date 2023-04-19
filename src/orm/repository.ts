@@ -142,7 +142,7 @@ export default class Repository<T> {
 
     (item as any).beforeUpdate();
 
-    this.deepUpdate(item, data);
+    this.deepUpdate(item, data, options);
 
     (item as any).afterUpdate();
 
@@ -327,155 +327,16 @@ export default class Repository<T> {
     return options ? { ...defaultEndpointOptions, ...options } : defaultEndpointOptions;
   }
 
-  deepUpdate(item: any, newData: object): void {
-    try {
-      // for each field that needs to be updated
-      Object.entries(newData).forEach(([key, value]) => {
-        // if its an array
-        if (Array.isArray(value)) {
-          this.processArray(item, key, value);
-          // if its an object and value is not null
-        } else if (typeof value === 'object' && value !== null) {
-          this.processObject(item, key, value);
-        } else {
-          // if its not an array or object, we can just set the value
-          item[key] = value;
-        }
-      });
-    } catch (error) {
-      console.error(
-        `Error in deepUpdate: ${error}\n` +
-          `For item: ${JSON.stringify(item)}\n` +
-          `and newData: ${JSON.stringify(newData)}`,
-      );
-    }
-  }
+  deepUpdate(item: any, newData: object, options?: QueryOptions): void {
+    const mergedData = {
+      ...item,
+      ...newData,
+    };
 
-  private processObject(item: any, key: string, value: any) {
-    try {
-      const hasPropType = item.propTypes?.[key] !== undefined;
-      const itemIsUndefined = item[key] === undefined || !item[key];
-
-      if (!hasPropType && itemIsUndefined) {
-        // item[key] = {};
-
-        this.deepUpdate(item[key], value);
-      } else if (hasPropType && itemIsUndefined) {
-        const ModelConstructor = item.propTypes[key];
-
-        if (ModelConstructor) {
-          item[key] = this.createModelInstance(item, value, key);
-        }
-      } else {
-        // if the item is already defined, recursively update it
-        this.deepUpdate(item[key], value);
-      }
-    } catch (error) {
-      console.error(
-        `Error in processObject: ${error}\n` +
-          `For item: ${JSON.stringify(item)}\n` +
-          `and key: ${key}\n` +
-          `and value: ${JSON.stringify(value)}`,
-      );
-    }
-  }
-
-  private processArray(item: any, key: string, value: any) {
-    try {
-      // if the item doesn't have the array, create it
-      if (item[key] === undefined || !Array.isArray(item[key])) {
-        item[key] = [];
-      }
-
-      // if item is an array and values length is smaller than item length, remove the extra items
-      if (Array.isArray(item[key]) && value.length < item[key].length) {
-        // if the item has a getter/setter, we need to set the value as an array
-        const descriptor = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(item), key);
-        const hasGetterSetter = descriptor && (descriptor.get || descriptor.set);
-
-        // remove all items after the new array length
-        hasGetterSetter ? (item[key] = item[key].slice(0, value.length)) : item[key].splice(value.length);
-      }
-
-      // for each item in the array
-      value.forEach((arrayItem: any, index: number) => {
-        this.processArrayItem(item, key, value, arrayItem, index);
-      });
-    } catch (error) {
-      console.error(
-        `Error in processArray: ${error}\n` +
-          `For item: ${JSON.stringify(item)}\n` +
-          `and key: ${key}\n` +
-          `and value: ${JSON.stringify(value)}`,
-      );
-    }
-  }
-
-  private processArrayItem(item: any, key: string, value: any, arrayItem: any, index: number) {
-    try {
-      const hasPropType = item.propTypes?.[key] !== undefined;
-      const isArray = Array.isArray(arrayItem);
-      const isObject = typeof arrayItem === 'object';
-      const isUndefined = typeof item[key]?.[index] === 'undefined';
-
-      // if the item is undefined, does not have a class defined, and is an array or object, create it
-      if (isUndefined && !hasPropType && (isArray || isObject)) {
-        item[key][index] = isArray ? [] : {};
-
-        // recursively update the item
-        this.deepUpdate(item[key][index], arrayItem);
-      } else if (isUndefined && hasPropType) {
-        // if the value is undefined and the item has a class defined, create the new instance
-        const ModelConstructor = item.propTypes[key];
-        if (ModelConstructor) {
-          // if the item has a getter/setter, we need to set the value as an array
-          const descriptor = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(item), key);
-          const hasGetterSetter = descriptor && (descriptor.get || descriptor.set);
-
-          // create the new instance
-          const newItem = this.createModelInstance(item, arrayItem, key);
-
-          if (newItem) {
-            // add the new instance to the array
-            hasGetterSetter ? (item[key] = [...item[key], newItem]) : item[key].push(newItem);
-          }
-        }
-      } else if (isArray || isObject) {
-        // if the item is already defined, recursively update it
-        this.deepUpdate(item[key][index], arrayItem);
-      } else {
-        // if the item is already defined and is not an array or object, set the value
-        item[key][index] = arrayItem;
-      }
-    } catch (error) {
-      console.error(
-        `Error in processArrayItem: ${error}\n` +
-          `For item: ${JSON.stringify(item)}\n` +
-          `and key: ${key}\n` +
-          `and value: ${JSON.stringify(value)}` +
-          `and arrayItem: ${JSON.stringify(arrayItem)}\n` +
-          `and index: ${index}`,
-      );
-    }
-  }
-
-  // if the item has a model constructor, we need to create a new instance of that model
-  private createModelInstance(item: any, value: any, key: string): any {
-    if (typeof item.propTypes === 'undefined') {
-      return;
-    }
-
-    const ModelConstructor = item.propTypes[key];
-
-    if (!ModelConstructor) {
-      return;
-    }
-
-    const newItem = new ModelConstructor(value);
-
-    this.deepUpdate(newItem, value);
-
-    return newItem;
+    this.save(mergedData, {
+      replace: true,
+      dataset: options?.dataset ?? 'all',
+    });
   }
 
   datasetExists(key?: string): boolean {

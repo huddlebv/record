@@ -12,10 +12,10 @@ enum PostType {
 }
 
 export default class Post extends Model {
-  propTypes = {
+  /*propTypes = {
     hobbies: Hobby,
-    // user: User,
-  };
+    user: User,
+  };*/
 
   title: string | null;
   someVar: number;
