@@ -14,7 +14,7 @@ enum PostType {
 export default class Post extends Model {
   propTypes = {
     hobbies: Hobby,
-    user: User,
+    // user: User,
   };
 
   title: string | null;

@@ -17,15 +17,16 @@ function runUpdateTests() {
   Post.store.save({
     id: 1,
     title: "Hello World 1!",
-    user: {
+    /*user: {
       id: 1,
       name: "User 1",
-    },
+    },*/
     likes: [
       {
         id: 1,
       },
     ],
+    likedNames: ["Jeffrey", "Dahmer"]
   });
 
   Post.store.update(1, {
