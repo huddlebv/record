@@ -17,15 +17,16 @@ function runUpdateTests() {
   Post.store.save({
     id: 1,
     title: "Hello World 1!",
-    user: {
+    /*user: {
       id: 1,
       name: "User 1",
-    },
+    },*/
     likes: [
       {
         id: 1,
       },
     ],
+    likedNames: ["Jeffrey", "Dahmer"]
   });
 
   Post.store.update(1, {
@@ -53,6 +54,8 @@ function runUpdateTests() {
   if (Post.store.first()!.user?.name !== "User 2") {
     console.error("Post user name is not User 2");
   }
+
+  console.log(Post.store.first()!.user?.upperName);
 
   if (Post.store.first()!.title !== "Hello World 21!") {
     console.error("Post title is not Hello World 21!");
