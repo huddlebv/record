@@ -345,8 +345,8 @@ export default class Repository<T> {
     } catch (error) {
       console.error(
         `Error in deepUpdate: ${error}\n` +
-        `For item: ${JSON.stringify(item)}\n` +
-        `and newData: ${JSON.stringify(newData)}`
+          `For item: ${JSON.stringify(item)}\n` +
+          `and newData: ${JSON.stringify(newData)}`,
       );
     }
   }
@@ -373,9 +373,9 @@ export default class Repository<T> {
     } catch (error) {
       console.error(
         `Error in processObject: ${error}\n` +
-        `For item: ${JSON.stringify(item)}\n` +
-        `and key: ${key}\n` +
-        `and value: ${JSON.stringify(value)}`
+          `For item: ${JSON.stringify(item)}\n` +
+          `and key: ${key}\n` +
+          `and value: ${JSON.stringify(value)}`,
       );
     }
   }
@@ -404,9 +404,9 @@ export default class Repository<T> {
     } catch (error) {
       console.error(
         `Error in processArray: ${error}\n` +
-        `For item: ${JSON.stringify(item)}\n` +
-        `and key: ${key}\n` +
-        `and value: ${JSON.stringify(value)}`
+          `For item: ${JSON.stringify(item)}\n` +
+          `and key: ${key}\n` +
+          `and value: ${JSON.stringify(value)}`,
       );
     }
   }
@@ -450,11 +450,11 @@ export default class Repository<T> {
     } catch (error) {
       console.error(
         `Error in processArrayItem: ${error}\n` +
-        `For item: ${JSON.stringify(item)}\n` +
-        `and key: ${key}\n` +
-        `and value: ${JSON.stringify(value)}` +
-        `and arrayItem: ${JSON.stringify(arrayItem)}\n` +
-        `and index: ${index}`
+          `For item: ${JSON.stringify(item)}\n` +
+          `and key: ${key}\n` +
+          `and value: ${JSON.stringify(value)}` +
+          `and arrayItem: ${JSON.stringify(arrayItem)}\n` +
+          `and index: ${index}`,
       );
     }
   }
