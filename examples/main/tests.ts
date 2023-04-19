@@ -55,6 +55,8 @@ function runUpdateTests() {
     console.error("Post user name is not User 2");
   }
 
+  console.log(Post.store.first()!.user?.upperName);
+
   if (Post.store.first()!.title !== "Hello World 21!") {
     console.error("Post title is not Hello World 21!");
   }
