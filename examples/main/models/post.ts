@@ -12,11 +12,6 @@ enum PostType {
 }
 
 export default class Post extends Model {
-  propTypes = {
-    hobbies: Hobby,
-    // user: User,
-  };
-
   title: string | null;
   someVar: number;
   // hobbies: Hobby[] = [];
@@ -50,7 +45,7 @@ export default class Post extends Model {
   }
 
   set hobbies(value: any) {
-    this.setupRelation<Hobby>(Hobby, value, "postId");
+    this.setupRelation<Hobby>(Hobby, value);
   }
 
   declare id: number;
