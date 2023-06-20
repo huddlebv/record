@@ -82,4 +82,21 @@ function runUpdateTests() {
   if (Post.store.first()!.likedNames![0] !== "User 1") {
     console.error("Post likedNames[0] is not User 1");
   }
+
+  Post.store.update(1, {
+    id: 4,
+    title: "Hello World 21!",
+  });
+
+  if (Post.store.count() !== 3) {
+    console.error("Post count is not 3 after updating id");
+  }
+
+  if (Post.store.first()!.id !== 2) {
+    console.log("Post with id 1 should no longer exist");
+  }
+
+  if (Post.store.last()!.id !== 4) {
+    console.log("Post with id 4 should exist");
+  }
 }

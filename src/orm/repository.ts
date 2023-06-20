@@ -327,16 +327,23 @@ export default class Repository<T> {
     return options ? { ...defaultEndpointOptions, ...options } : defaultEndpointOptions;
   }
 
-  deepUpdate(item: any, newData: object, options?: QueryOptions): void {
+  deepUpdate(item: any, newData: any, options?: QueryOptions): void {
+    // merge the data
     const mergedData = {
       ...item,
       ...newData,
     };
 
+    // save the updated one
     this.save(mergedData, {
       replace: true,
       dataset: options?.dataset ?? 'all',
     });
+
+    // delete the existing record if the id has changed
+    if (typeof newData.id !== 'undefined' && newData.id !== item.id) {
+      this.delete(item.id, null, options);
+    }
   }
 
   datasetExists(key?: string): boolean {
