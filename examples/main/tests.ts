@@ -99,4 +99,12 @@ function runUpdateTests() {
   if (Post.store.last()!.id !== 4) {
     console.log("Post with id 4 should exist");
   }
+
+  const updatedPost = Post.store.update(4, {
+    title: "Updated title",
+  });
+
+  if (updatedPost!.title !== "Updated title") {
+    console.log("Post title is not Updated title");
+  }
 }

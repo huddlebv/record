@@ -146,7 +146,7 @@ export default class Repository<T> {
 
     (item as any).afterUpdate();
 
-    return item;
+    return this.find(id, options);
   }
 
   // deleteSingleItem by id or by key/value pair
