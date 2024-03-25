@@ -66,6 +66,10 @@ export default class Api<T> {
   private async makeRequest(method: HttpRequestMethod, apiRequest: InternalApiRequest): Promise<ApiResponse<T>> {
     const requestOptions: ApiRequestConfig = this.returnApiOptions(apiRequest.options);
 
+    if (requestOptions.dataset && requestOptions.dataset === '') {
+      requestOptions.dataset = 'all';
+    }
+
     return new Promise(async (resolve, reject) => {
       await apiRequest
         .callback(apiRequest.url && apiRequest.url !== '' ? apiRequest.url : this.config.route)

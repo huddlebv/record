@@ -102,6 +102,10 @@ export default class Repository<T> {
       return null;
     }
 
+    if (options?.dataset && options.dataset === '') {
+      options.dataset = 'all';
+    }
+
     // create the dataset if it doesn't exist
     if (options?.dataset && !this.datasetExists(options?.dataset)) {
       this.data[options.dataset] = [];
@@ -114,6 +118,10 @@ export default class Repository<T> {
 
   // delete one or multiple models from the data store by id or by key/value pair
   delete(key: number | number[] | string, value?: any, options?: QueryOptions): void {
+    if (options?.dataset && options.dataset === '') {
+      options.dataset = 'all';
+    }
+
     if (!this.datasetExists(options?.dataset)) {
       return;
     }
@@ -130,6 +138,10 @@ export default class Repository<T> {
   }
 
   update(id: number, data: object, options?: QueryOptions): T | null {
+    if (options?.dataset && options.dataset === '') {
+      options.dataset = 'all';
+    }
+
     if (!this.datasetExists(options?.dataset)) {
       return null;
     }
@@ -170,6 +182,10 @@ export default class Repository<T> {
 
   // delete all data from the store (optionally by key)
   clear(options?: QueryOptions): void {
+    if (options?.dataset && options.dataset === '') {
+      options.dataset = 'all';
+    }
+
     if (!this.datasetExists(options?.dataset)) {
       return;
     }
