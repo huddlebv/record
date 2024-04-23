@@ -29,6 +29,7 @@ export default class Model {
       (model.store as Repository<T>).transform(data, {
         save: true,
         replace: true,
+        prepend: false,
       });
     }
   }
