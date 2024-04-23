@@ -306,7 +306,11 @@ export default class Repository<T> {
         this.data[key] = [];
       }
 
-      this.data[key].push(data);
+      if (typeof options.prepend !== 'undefined') {
+        options.prepend ? this.data[key].unshift(data) : this.data[key].push(data);
+      } else {
+        this.data[key].push(data);
+      }
 
       return data;
     } else if (options.replace) {
@@ -338,6 +342,7 @@ export default class Repository<T> {
       update: false,
       save: true,
       dataset: 'all',
+      prepend: false,
     };
 
     return options ? { ...defaultEndpointOptions, ...options } : defaultEndpointOptions;

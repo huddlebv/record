@@ -117,6 +117,7 @@ export default class Api<T> {
       save: true,
       source: record.api.source,
       dataset: 'all',
+      prepend: false,
     };
 
     defaultEndpointOptions = { ...defaultEndpointOptions, ...this.config };

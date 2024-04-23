@@ -9,4 +9,5 @@ export interface ApiRequestConfig {
   delete?: number | number[] | string;
   deleteValue?: any;
   dataset?: string;
+  prepend?: boolean;
 }
