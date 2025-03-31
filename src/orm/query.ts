@@ -172,7 +172,7 @@ export default class Query<T> {
   orderBy(field: string | Function, direction: 'asc' | 'desc' = 'asc'): Query<T> {
     // if the field is a function, we can't sort the query result
     if (typeof field === 'string') {
-      this.queryResult = this.queryResult.sort((a, b) => {
+      this.queryResult = [...this.queryResult].sort((a, b) => {
         if (direction === 'asc') {
           return (a as any)[field] > (b as any)[field] ? 1 : -1;
         } else {
@@ -180,7 +180,7 @@ export default class Query<T> {
         }
       });
     } else {
-      this.queryResult = this.queryResult.sort((a, b) => {
+      this.queryResult = [...this.queryResult].sort((a, b) => {
         if (direction === 'asc') {
           return field(a) > field(b) ? 1 : -1;
         } else {
