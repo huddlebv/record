@@ -151,4 +151,29 @@ async function runUpdateTests() {
   if (Post.store.first()!.id !== 5) {
     console.log("Post with id 5 should be first");
   }
+
+Post.store.clear();
+
+  // Test orderBy
+  Post.store.save([
+    { id: 6, title: "A Post" },
+    { id: 7, title: "B Post" },
+    { id: 8, title: "C Post" }
+  ]);
+
+  const ascendingPosts = Post.store.query().orderBy('title', 'asc').get();
+  if (ascendingPosts[0].title !== "A Post") {
+    console.error("OrderBy ascending not working correctly");
+  }
+
+  const descendingPosts = Post.store.query().orderBy('title', 'desc').get();
+  if (descendingPosts[0].title !== "C Post") {
+    console.error("OrderBy descending not working correctly");
+  }
+
+  // Test orderBy with function
+  const postsById = Post.store.query().orderBy((post: { id: number }) => post.id, 'desc').get();
+  if (postsById[0].id !== 8) {
+    console.error("OrderBy with function not working correctly");
+  }
 }
