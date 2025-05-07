@@ -2,8 +2,8 @@ import Model from "../../../src/orm/model.js";
 import PostRepository from "../repositories/postRepository.js";
 import PostService from "../services/postService.js";
 import Hobby from "./hobby.js";
-import User from "./user";
-import type LikeInterface from "../interfaces/likeInterface";
+import User from "./user.js";
+import type LikeInterface from "../interfaces/likeInterface.js";
 
 enum PostType {
   TEXT = "text",

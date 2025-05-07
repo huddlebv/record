@@ -1,4 +1,4 @@
-import Post from "./models/post";
+import Post from "./models/post.js";
 
 export default async function runTests() {
   await runApiTests();
@@ -152,7 +152,7 @@ async function runUpdateTests() {
     console.log("Post with id 5 should be first");
   }
 
-Post.store.clear();
+  Post.store.clear();
 
   // Test orderBy
   Post.store.save([

@@ -7,8 +7,8 @@
   "type": "module",
   "scripts": {
     "build": "tsc",
-    "dev": "nodemon -I --exec node --experimental-specifier-resolution=node  --loader ts-node/esm ./src/index.ts",
-    "example": "nodemon -I --exec node --experimental-specifier-resolution=node  --loader ts-node/esm ./examples/main/index.ts",
+    "dev": "nodemon -I --exec node --import ./src/register.js ./src/index.ts",
+    "example": "nodemon -I --exec node --import ./src/register.js ./examples/main/index.ts",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "tslint -p tsconfig.json",
     "prepare": "npm run build",
